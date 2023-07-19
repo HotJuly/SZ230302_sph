@@ -2,8 +2,10 @@
     <div id="app">
         <!-- Header区域 -->
         <Header></Header>
+
         <!-- 路由切换区域 -->
-        <h1>Home</h1>
+        <router-view></router-view>
+
         <!-- Footer区域 -->
         <Footer/>
     </div>

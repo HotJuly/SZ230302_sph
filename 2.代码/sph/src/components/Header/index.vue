@@ -8,13 +8,13 @@
           <p>尚品汇欢迎您！</p>
           <p>
             <span>请</span>
-            <a href="###">登录</a>
-            <a href="###" class="register">免费注册</a>
+            <router-link to="/login">登录</router-link>
+            <router-link to="/register" class="register">免费注册</router-link>
           </p>
         </div>
         <div class="typeList">
           <a href="###">我的订单</a>
-          <a href="###">我的购物车</a>
+          <router-link to="/cart">我的购物车</router-link>
           <a href="###">我的尚品汇</a>
           <a href="###">尚品汇会员</a>
           <a href="###">企业采购</a>
@@ -27,14 +27,14 @@
     <!--头部第二行 搜索区域-->
     <div class="bottom">
       <h1 class="logoArea">
-        <a class="logo" title="尚品汇" href="###" target="_blank">
+        <router-link to="/home" class="logo" title="尚品汇">
           <img src="./images/logo.png" alt="">
-        </a>
+        </router-link>
       </h1>
       <div class="searchArea">
         <form action="###" class="searchForm">
           <input type="text" id="autocomplete" class="input-error input-xxlarge" />
-          <button class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
+          <button class="sui-btn btn-xlarge btn-danger" type="button" @click="toSearch">搜索</button>
         </form>
       </div>
     </div>
@@ -43,7 +43,15 @@
 
 <script>
 export default {
-  name: 'Header'
+  name: 'Header',
+  methods:{
+    toSearch(){
+      // push方法跳转路由,会保留上一个历史记录,所以可以返回上一个路由
+      // replace方法跳转路由,会覆盖上一个历史记录,所以无法返回上一个路由
+      this.$router.push('/search');
+      // this.$router.replace('/search');
+    }
+  }
 }
 </script>
 
