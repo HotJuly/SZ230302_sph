@@ -1,0 +1,86 @@
+{
+	"vue1": {
+		"prefix": "vue1",
+		"body": [
+			"<template>",
+			"  <div></div>",
+			"</template>",
+			"",
+			"<script>",
+				"  export default {",
+				"    name:'$0'",
+				"  }",
+			"</script>",
+			"",
+			"<style scoped>",
+			"  ",
+			"</style>",
+		],
+		"description": "Vue组件"
+	},
+	"vue2": {
+		"prefix": "vue2",
+		"body": [
+			"<template>",
+			"  ",
+			"</template>",
+			"",
+			"<script>",
+				"  export default {",
+				"    name:'$0'",
+				"  }",
+			"</script>",
+			"",
+			"<style lang=\"less\" scoped>",
+			"  ",
+			"</style>",
+		],
+		"description": "Vue组件"
+	},
+	"vue3": {
+		"prefix": "vue3",
+		"body": [
+			"<template>",
+			"  ",
+			"</template>",
+			"",
+			"<script lang=\"ts\">",
+				"  import {defineComponent} from 'vue'",
+				"",
+				"  export default defineComponent({",
+					"    name:'$TM_FILENAME_BASE',",
+				"  })",
+			"</script>",
+			"",
+			"<script setup lang=\"ts\">",
+			"  $0",
+			"</script>",
+			"",
+			"<style scoped>",
+			"  ",
+			"</style>"
+		],
+		"description": "Vue组件"
+	},
+	"checked": {
+		"prefix": "checked",
+		"body": [
+			"checked",
+		],
+		"description": "checked"
+	},
+	"length": {
+		"prefix": "length",
+		"body": [
+			"length",
+		],
+		"description": "length"
+	},
+	"hasOwnProperty": {
+		"prefix": "hasOwnProperty",
+		"body": [
+			"hasOwnProperty",
+		],
+		"description": "hasOwnProperty"
+	}
+}
