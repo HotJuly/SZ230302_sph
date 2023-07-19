@@ -1,6 +1,11 @@
 <template>
     <div id="app">
-        APP2
+        <!-- Header区域 -->
+        <Header></Header>
+        <!-- 路由切换区域 -->
+        <h1>Home</h1>
+        <!-- Footer区域 -->
+        <Footer/>
     </div>
 </template>
 
