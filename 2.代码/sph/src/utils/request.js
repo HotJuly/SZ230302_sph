@@ -20,7 +20,6 @@ const request = axios.create({
 // 请求拦截器和响应拦截器是面试的一大重点
 request.interceptors.request.use(
     (config) => {
-        // console.log('config',config);
         // 在每个请求发送出去之后,都会执行start方法,用于开启进度条
         nProgress.start();
 
@@ -39,7 +38,6 @@ request.interceptors.response.use(
     // response是一个响应报文对象
     // 内部具有响应头和响应体的数据
     // 响应头是给浏览器使用的,响应体是给开发人员使用的
-    // console.log('response',response)
 
     const res = response.data;
 
