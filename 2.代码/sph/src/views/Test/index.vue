@@ -5,7 +5,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
+// import nProgress from 'nprogress';
+// import 'nprogress/nprogress.css';
+import request from '@/utils/request.js';
   export default {
     name:'Test',
     async mounted(){
@@ -20,8 +23,10 @@ import axios from 'axios';
             简单来说,就是将axios请求到的数据,直接返回给左侧变量存储
       
       */
-      const result = await axios.get('/dev-api/api/product/getBaseCategoryList');
+      // nProgress.start();
+      const result = await request.get('/api/product/getBaseCategoryList');
       console.log('result',result);
+      // nProgress.done();
     }
   }
 </script>
