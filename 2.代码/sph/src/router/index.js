@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
+import './rewriteNavigate.js';
+
 import Home from '@/views/Home';
 import Cart from '@/views/Cart';
 import Login from '@/views/Login';
@@ -9,6 +11,8 @@ import Register from '@/views/Register';
 import Test from '@/views/Test';
 
 Vue.use(VueRouter);
+
+
 
 export default new VueRouter({
     mode:"hash",

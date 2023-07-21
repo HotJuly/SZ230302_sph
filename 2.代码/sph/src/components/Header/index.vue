@@ -61,8 +61,9 @@ export default {
           实际原因:返回Promise对象变为了失败状态,所以导致控制台出现报错
       
       */
+      // this.$router.push('/search')
       // const result = this.$router.push('/search');
-      // this.$router.replace('/search');
+      this.$router.replace('/search');
 
       // console.log(result)
 
@@ -116,12 +117,14 @@ export default {
       // );
 
       // 即便不传入失败的回调函数,底层也会自动解决该报错
-      const result = this.$router.push(
-        '/search',
-        () => {
-          console.log('跳转成功')
-        }
-      );
+      // const result = this.$router.push(
+      //   '/search',
+      //   () => {
+      //     console.log('跳转成功')
+      //   }
+      // );
+
+      // console.log(this.$router)
     }
   }
 }
