@@ -13,7 +13,6 @@ import Test from '@/views/Test';
 Vue.use(VueRouter);
 
 
-
 export default new VueRouter({
     mode:"hash",
     routes:[

@@ -9,10 +9,14 @@ VueRouter.prototype.push = function(path,successCb,failCb){
 
     /* 
         重写一个方法的目的,是为了在原先的功能上,还能增加一些新的功能
-        
+
         本次增加的效果是在于判断用户的传参情况:
             如果开发者有传入成功或者失败的回调,就是用他们传入的回调函数
-            否  则我们传入两个空的函数,防止报错的出现
+            否则我们传入两个空的函数,防止报错的出现
+
+        call方法接收的参数个数0-无数个
+            第一个实参是用于指定本次函数执行时候的this
+            从第二个实参开始的数据,都会传给本次执行的函数
     */ 
     if(successCb||failCb){
         originPush.call(this,path,successCb,failCb)
