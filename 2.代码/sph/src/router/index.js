@@ -6,6 +6,7 @@ import Cart from '@/views/Cart';
 import Login from '@/views/Login';
 import Search from '@/views/Search';
 import Register from '@/views/Register';
+import Test from '@/views/Test';
 
 Vue.use(VueRouter);
 
@@ -31,6 +32,14 @@ export default new VueRouter({
         {
             path:"/search",
             component:Search
+        },
+        {
+            path:"/test",
+            component:Test
+        },
+        {
+            path:"*",
+            redirect:"/home"
         }
     ]
 })
