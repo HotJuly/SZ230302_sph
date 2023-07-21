@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+            需求1:
+                声明变量num,用于存储某个数字
+                将num存储的数据,推入某个数组中
+
+            需求2:
+                在推入数字之间,需要将数字+1操作
+        */
+
+        var num = 5;
+        var arr = [1,2,3];
+        var arr2 = [8,9,10];
+
+
+        //------------------------------
+        // num++;
+        // arr.push(num);
+
+
+        //------------------------------------
+        // arr数组上其实并没有push方法
+        // 不过arr找不到push方法之后,会顺着原型链找到Array.prototype
+        // 而原型对象上,就有push方法可以使用
+        // 小总结:所有数组的实例对象,会共享数组原型对象上的所有方法
+
+        // 封装函数的目的,是为了减少当前项目的代码量的书写
+        // function myPush(arr,num){
+        //     num++;
+        //     arr.push(num);
+        // }
+
+        // myPush(arr,num)
+
+        // console.log('arr',arr)
+
+        // console.log(Array.prototype)
+
+        //----------------------------------------
+
+        // 以下代码是在声明一个全新的函数,并覆盖push属性中原本的函数
+
+        // 1.将真正的push方法,存入originPush变量中,防止后续覆盖之后找不到
+        const originPush = Array.prototype.push;
+
+        // 2.重写数组的push方法,在无形中,影响整个项目的push操作
+        Array.prototype.push = function(data){
+            // 本函数的this是需要推入数据的数组,此时是arr
+            data++;
+            // console.log('新的push来了',data)
+
+            // 这是普通调用,所以this是window
+            //this指向window是错误的,所以我们使用call方法,强行将真正push方法的this改为假push的this
+            originPush.call(this,data);
+        }
+
+        arr.push(111);
+        arr.push(111);
+        arr.push(111);
+        arr.push(111);
+        arr.push(111);
+        arr.push(111);
+        arr.push(111);
+
+        console.log(arr)
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+            在js代码中,出现英文字母,只有两种结果
+                    1.变量
+                    2.属性
+
+            1.this的了解
+                this他是一个关键字(开发者不能声明)
+                this的本质其实是一个变量(其实感觉很像是形参)
+                    形参,我们声明形参,他存储的数据来源于开发者,调用函数时候传入的值
+                    this,浏览器声明this,它存储的数据来源于浏览器,调用函数时候传入的值
+                        它相当于是浏览器专用的形参
+
+                this内部一般存储的是,当前函数的调用者
+                    内部存储的数据类型是对象数据类型
+
+                this指向与函数的声明位置无关,与调用方式有关
+
+            2.常见的this指向:
+                1.普通调用(this->window)
+                    例如:fn()
+
+                2.隐式调用(this->找到方法的实例对象->obj)
+                    例如:obj.fn()
+
+                    注意:不管写法多么花里胡哨,只要观察最终是从哪个对象身上调用的方法
+
+                    a.b.c.d.e.f.g.h();
+
+                3.构造调用(this->新创建的实例对象)
+                    例如:new fn();
+
+                4.显式调用(this->开发者强行指定的实例对象->obj2)
+                    指的是call,apply,bind方法
+                    例如:fn.call(obj2)
+        */
+
+        function fn(){
+            console.log('fn',this);
+        }
+
+
+        //-------------------------
+        // fn();
+
+
+        //--------------------------
+        // var obj = {
+        //     name:"xiaoming",
+        //     f:fn
+        // }
+
+        // obj.f();
+
+        //-----------------------
+        // new fn();
+
+        //------------------
+        var obj2 = {
+            name:"小红"
+        }
+
+        fn.call(obj2);
+    
+    </script>
+</body>
+</html>
