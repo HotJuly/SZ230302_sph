@@ -38,9 +38,9 @@
       wrap.onclick = function (event) {
         // 可以获取当前真正的目标元素
         const target = event.target;
-        // if(target.match('.inner'))
-        // console.log("hello",target);
-        console.dir(target)
+        if(target.matches('.inner')){
+          console.log('hello')
+        }
       };
     </script>
   </body>
