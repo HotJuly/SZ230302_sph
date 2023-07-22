@@ -4,7 +4,7 @@
             <div class="nav-left">
                 <h2 class="all">全部商品分类</h2>
                 <div class="sort">
-                    <div class="all-sort-list2">
+                    <div class="all-sort-list2"  @click.prevent="toSearch">
                         <div class="item" v-for="c1 in categoryList" :key="c1.categoryId">
                             <h3>
                                 <a href="">{{ c1.categoryName }}</a>
@@ -62,6 +62,12 @@ export default {
         setTimeout(()=>{
             console.log('categoryList',this.categoryList)
         },3000)
+    },
+    methods:{
+        toSearch(){
+            // 后面项目还有很多代码要写
+            this.$router.push('/search')
+        }
     },
     watch:{
         // msg(){

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="wrap">
+      <div class="inner">A</div>
+      <div class="inner">B</div>
+      <div class="inner">C</div>
+      <h1 class="inner2">D</h1>
+      <h1 class="inner2">E</h1>
+    </div>
+    <script>
+      /*
+            需求:当用户点击.inner元素的时候,打印hello即可
+            拆解:
+                1.当用户点击.inner元素的时候
+                    需要绑定事件监听
+                        事件源:具有类名inner的元素(共有三个)
+                        事件名:click
+
+                2.打印hello即可
+                    console.log调用即可
+        */
+
+      var inners = document.querySelectorAll(".inner");
+
+      // for (let i = 0; i < inners.length; i++) {
+      //     const element = inners[i];
+      //     element.onclick=function(){
+      //         console.log('hello')
+      //     }
+      // }
+
+      wrap.onclick = function (event) {
+        // 可以获取当前真正的目标元素
+        const target = event.target;
+        // if(target.match('.inner'))
+        // console.log("hello",target);
+        console.dir(target)
+      };
+    </script>
+  </body>
+</html>
