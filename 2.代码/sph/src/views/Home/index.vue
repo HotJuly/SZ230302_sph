@@ -1,15 +1,18 @@
 <template>
-  <h1>
-    Home
-  </h1>
+  <div class="home">
+    <!-- 商品分类导航 -->
+    <TypeNav/>
+  </div>
 </template>
 
 <script>
-  export default {
-    name:'Home'
+import TypeNav from './components/TypeNav';
+export default {
+  name: 'Home',
+  components:{
+    TypeNav
   }
+}
 </script>
 
-<style lang="less" scoped>
-  
-</style>
+<style lang="less" scoped></style>
