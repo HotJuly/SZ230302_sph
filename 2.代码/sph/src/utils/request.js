@@ -10,7 +10,7 @@ import 'nprogress/nprogress.css';
 */
 const request = axios.create({
   baseURL: "/dev-api",
-  timeout: 20000,
+  timeout: 20000
 });
 
 // 这是axios的请求拦截器
@@ -46,7 +46,7 @@ request.interceptors.response.use(
     // 本次项目中,响应体内部会有code属性,用于告知本次请求的真实请求状态
     // 如果code为200,说明本次请求成功,如果code不为200,说明本次请求失败,有问题
     if(res.code===200){
-        // 默认返回响应体中的数据
+        // 默认返回响应体中data属性的数据
         return res.data;
     }else{
         alert(res.message);
@@ -57,6 +57,8 @@ request.interceptors.response.use(
   },
   () => {
     nProgress.done();
+
+    return Promise.reject('网络请求失败,请检查网络配置!!');
   }
 );
 

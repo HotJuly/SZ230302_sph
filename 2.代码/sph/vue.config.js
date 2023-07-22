@@ -12,6 +12,10 @@ module.exports = defineConfig({
           "^/dev-api":""
         },
       },
+      "/api": {
+        target: "http://sph-h5-api.atguigu.cn",
+        changeOrigin: true,
+      },
       // "/v2":{
       //   target: "http://www.baidu.com",
       //   changeOrigin: true,

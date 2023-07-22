@@ -5,7 +5,9 @@
 </template>
 
 <script>
-import request from '@/utils/request.js';
+// import request from '@/utils/request.js';
+// import home from '@/api/modules/home.js';
+// import test from '@/api/modules/test.js';
 export default {
   name: 'Test',
   async mounted() {
@@ -20,8 +22,15 @@ export default {
           简单来说,就是将axios请求到的数据,直接返回给左侧变量存储
     
     */
-    const result = await request.get('/api/product/getBaseCategoryList');
-    console.log('result', result);
+    // const result = await request.get('/api/product/getBaseCategoryList');
+    // console.log('result', result);
+
+    // const result = await home.reqBaseCategoryList();
+    // console.log('result', result);
+
+  const result = await this.$API.test.reqBaseCategoryList();
+  console.log('result', result);
+
   }
 }
 </script>
