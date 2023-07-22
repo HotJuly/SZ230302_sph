@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 
 import router from '@/router';
+import store from '@/store';
 
 import * as API from '@/api';
 
@@ -18,6 +19,7 @@ Vue.component(Footer.name,Footer);
 
 new Vue({
     router,
+    store,
     render:h => h(App)
 })
 .$mount('#app');
