@@ -10,8 +10,6 @@ import * as API from '@/api';
 
 Vue.prototype.$API = API;
 
-console.log(API)
-
 Vue.config.productionTip = false;
 
 // 引入.vue文件,可以获取到Header组件的配置对象,然后从中获取到他的name属性进行注册
