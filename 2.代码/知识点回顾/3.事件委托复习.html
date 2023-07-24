@@ -38,6 +38,8 @@
       wrap.onclick = function (event) {
         // 可以获取当前真正的目标元素
         const target = event.target;
+        // 使用matches方法,可以检测target元素是否符合传入的选择器的要求
+        // 如果满足就返回true,如果不满足就返回false
         if(target.matches('.inner')){
           console.log('hello')
         }

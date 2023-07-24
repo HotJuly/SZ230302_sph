@@ -1,17 +1,17 @@
 <template>
   <div class="home">
     <!-- 商品分类导航 -->
-    <TypeNav/>
+    <!-- <TypeNav/> -->
   </div>
 </template>
 
 <script>
-import TypeNav from './components/TypeNav';
+// import TypeNav from './components/TypeNav';
 export default {
   name: 'Home',
-  components:{
-    TypeNav
-  }
+  // components:{
+  //   TypeNav
+  // }
 }
 </script>
 

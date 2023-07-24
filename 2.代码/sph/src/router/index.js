@@ -18,7 +18,10 @@ export default new VueRouter({
     routes:[
         {
             path:"/home",
-            component:Home
+            component:Home,
+            meta:{
+                isShowTypeNav:true
+            }
         },
         {
             path:"/cart",
@@ -34,7 +37,10 @@ export default new VueRouter({
         },
         {
             path:"/search",
-            component:Search
+            component:Search,
+            meta:{
+                isShowTypeNav:true
+            }
         },
         {
             path:"/test",

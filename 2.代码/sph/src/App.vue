@@ -3,6 +3,9 @@
         <!-- Header区域 -->
         <Header></Header>
 
+        <!-- <TypeNav v-show="whiteList.includes($route.path)"/> -->
+        <TypeNav v-show="$route.meta.isShowTypeNav"/>
+
         <!-- 路由切换区域 -->
         <router-view></router-view>
 
@@ -13,7 +16,15 @@
 
 <script>
 export default {
-    name: 'App'
+    name: 'App',
+    data(){
+        return{
+            // whiteList:['/home','/search','/detail']
+        }
+    },
+    mounted(){
+        // console.log(this.$route)
+    }
 }
 </script>
 
