@@ -4,25 +4,32 @@
         <Header></Header>
 
         <!-- <TypeNav v-show="whiteList.includes($route.path)"/> -->
-        <TypeNav v-show="$route.meta.isShowTypeNav"/>
+        <TypeNav v-show="$route.meta.isShowTypeNav" />
 
-        <!-- 路由切换区域 -->
-        <router-view></router-view>
+        <transition 
+            mode="out-in"
+            enter-active-class="animate__fadeIn"
+            leave-active-class="animate__fadeOut"
+        >
+            <!-- 路由切换区域 -->
+            <router-view class="content animate__animated"></router-view>
+        </transition>
 
         <!-- Footer区域 -->
-        <Footer v-show="$route.meta.isShowFooter"/>
+        <Footer v-show="$route.meta.isShowFooter" />
     </div>
 </template>
 
 <script>
+import 'animate.css';
 export default {
     name: 'App',
-    data(){
-        return{
+    data() {
+        return {
             // whiteList:['/home','/search','/detail']
         }
     },
-    mounted(){
+    mounted() {
         // console.log(this.$route)
     }
 }
@@ -33,4 +40,7 @@ export default {
 //     font-size:50px;
 //     color:red;
 //   }
+.content{
+    --animate-duration:3s;
+}
 </style>

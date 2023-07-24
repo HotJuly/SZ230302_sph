@@ -69,10 +69,6 @@ export default {
         // this.categoryList=result;
 
         this.$store.dispatch('home/getCategoryList');
-
-        setTimeout(() => {
-            console.log('categoryList', this.categoryList)
-        }, 3000)
     },
     methods: {
         toSearch(event) {
@@ -83,8 +79,6 @@ export default {
             // 3.当前分类的名称
 
             const {id,level} = event.target.dataset;
-            // console.log(id,level,event.target.innerText)
-            // 后面项目还有很多代码要写
             // this.$router.push({
             //     path:"/search",
             //     query:{
