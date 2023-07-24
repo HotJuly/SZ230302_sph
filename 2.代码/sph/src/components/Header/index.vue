@@ -34,7 +34,7 @@
       </h1>
       <div class="searchArea">
         <form action="###" class="searchForm">
-          <input type="text" id="autocomplete" class="input-error input-xxlarge" />
+          <input v-model.lazy="keyword" type="text" id="autocomplete" class="input-error input-xxlarge" />
           <button class="sui-btn btn-xlarge btn-danger" type="button" @click="toSearch">搜索</button>
         </form>
       </div>
@@ -45,6 +45,13 @@
 <script>
 export default {
   name: 'Header',
+  data(){
+    return{
+      // 数据劫持,会对当前data对象中所有的属性名进行响应式操作
+      // 会将所有的属性都变为响应式属性,但是如果你没写该属性,他就不会是响应式的
+      keyword:undefined
+    }
+  },
   methods: {
     toSearch() {
       // push方法跳转路由,会保留上一个历史记录,所以可以返回上一个路由
@@ -61,9 +68,14 @@ export default {
           实际原因:返回Promise对象变为了失败状态,所以导致控制台出现报错
       
       */
-      // this.$router.push('/search')
+      this.$router.push({
+        path:'/search',
+        query:{
+          keyword:this.keyword
+        }
+      })
       // const result = this.$router.push('/search');
-      this.$router.replace('/search');
+      // this.$router.replace('/search');
 
       // console.log(result)
 

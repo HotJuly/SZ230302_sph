@@ -1,16 +1,10 @@
 <template>
     <div class="type-nav">
         <div class="container">
-            <div class="nav-left" 
-            @mouseenter="handleEnter"
-            @mouseleave="handleLeave"
-            >
+            <div class="nav-left" @mouseenter="handleEnter" @mouseleave="handleLeave">
                 <h2 class="all">全部商品分类</h2>
 
-                <transition 
-                    enter-active-class="animate__fadeIn"
-                    leave-active-class="animate__fadeOut"
-                >
+                <transition enter-active-class="animate__fadeIn" leave-active-class="animate__fadeOut">
                     <div class="sort animate__animated" v-show="isShowSort">
                         <div class="all-sort-list2" @click.prevent="toSearch">
                             <div class="item" v-for="c1 in categoryList" :key="c1.categoryId">
@@ -25,7 +19,8 @@
                                             </dt>
                                             <dd>
                                                 <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                                                    <a href="" :data-id="c3.categoryId" data-level="3">{{ c3.categoryName }}</a>
+                                                    <a href="" :data-id="c3.categoryId" data-level="3">{{ c3.categoryName
+                                                    }}</a>
                                                 </em>
                                             </dd>
                                         </dl>
@@ -59,7 +54,7 @@ export default {
         return {
             // categoryList:[],
             // msg:123m
-            isShowSort: this.$route.path==="/home"
+            isShowSort: this.$route.path === "/home"
         }
     },
     async mounted() {
@@ -78,7 +73,7 @@ export default {
             // 2.当前分类的级别
             // 3.当前分类的名称
 
-            const {id,level} = event.target.dataset;
+            const { id, level } = event.target.dataset;
             // this.$router.push({
             //     path:"/search",
             //     query:{
@@ -88,28 +83,41 @@ export default {
             //     }
             // })
 
-            const key = `category${level}Id`;
 
-            this.$router.push({
-                path:"/search",
-                query:{
-                    categoryName:event.target.innerText,
-                    [key]:id
-                }
-            })
+            // 出现了BUG,点击分类中的空白区域也会发生跳转
+            // 解决方法:在跳转路由之前,需要对本次点击的内容进行角色区分
+            // 满足条件:
+            //  1.点击的必须是a标签才跳转
+
+            // 获取到当前的目标元素
+            const target = event.target;
+
+            // 对目标元素的身份进行区分,如果是a标签就跳转
+            // if(target.matches('a')){
+            if (id) {
+                const key = `category${level}Id`;
+
+                this.$router.push({
+                    path: "/search",
+                    query: {
+                        categoryName: event.target.innerText,
+                        [key]: id
+                    }
+                })
+            }
         },
         handleEnter() {
             this.isShowSort = true;
         },
-        handleLeave(){
+        handleLeave() {
             // 其实鼠标移出的时候,也不一定是隐藏,也要看当前所在的页面
-            this.isShowSort = this.$route.path==="/home";
+            this.isShowSort = this.$route.path === "/home";
         }
     },
     watch: {
         // msg(){
         // }
-        "$route.path"(newVal,oldVal){
+        "$route.path"(newVal, oldVal) {
             // watch回调函数,会接收到两个参数
             // 第一个是本次最新的数据,第二个是上一次的旧数据
             // if(newVal==="/home"){
@@ -183,7 +191,7 @@ export default {
             background: #fafafa;
             z-index: 999;
 
-            --animate-duration:1s;
+            --animate-duration: 0.4s;
 
             .all-sort-list2 {
                 .item {
@@ -192,11 +200,15 @@ export default {
                         font-size: 14px;
                         font-weight: 400;
                         overflow: hidden;
-                        padding: 0 20px;
+                        // padding: 0 20px;
                         margin: 0;
 
                         a {
                             color: #333;
+                            display: block;
+                            width: 100%;
+                            height: 100%;
+                            padding: 0 20px;
                         }
                     }
 
@@ -267,38 +279,42 @@ export default {
 
 /*TypeNav的样式*/
 h3 {
-  line-height: 30px;
-  font-size: 14px;
-  font-weight: 400;
-  overflow: hidden;
-  padding: 0 20px;
-  margin: 0;
-	&:hover{
-		background-color: #e1251b;
-		a{
-			color: white;
-		}
-	}
-  a {
-    color: #333;
-  }
+    line-height: 30px;
+    font-size: 14px;
+    font-weight: 400;
+    overflow: hidden;
+    //   padding: 0 20px;
+    margin: 0;
+
+    &:hover {
+        background-color: #e1251b;
+
+        a {
+            color: white;
+        }
+    }
+
+    a {
+        color: #333;
+    }
 }
 
-dd{
-  /*********/
-  width: 520px;
-  /*********/
+dd {
+    /*********/
+    width: 520px;
+    /*********/
 }
-dt{
-  /*********/
-  width: 68px;
-  /*********/
+
+dt {
+    /*********/
+    width: 68px;
+    /*********/
 }
 
 /*reset.css*/
 /* 重置文本格式元素 */
-a:link:hover{
-    color : rgb(79, 76, 212) !important;
+a:link:hover {
+    color: rgb(79, 76, 212) !important;
     text-decoration: none;
 }
 </style>

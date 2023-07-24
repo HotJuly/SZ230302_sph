@@ -6,6 +6,7 @@
         <!-- <TypeNav v-show="whiteList.includes($route.path)"/> -->
         <TypeNav v-show="$route.meta.isShowTypeNav" />
 
+        <!-- 通过transition组件,实现对路由组件之间的切换过渡效果实现 -->
         <transition 
             mode="out-in"
             enter-active-class="animate__fadeIn"
@@ -41,6 +42,6 @@ export default {
 //     color:red;
 //   }
 .content{
-    --animate-duration:3s;
+    --animate-duration:0.4s;
 }
 </style>
