@@ -6,7 +6,10 @@
 
 <script>
   export default {
-    name:'Search'
+    name:'Search',
+    mounted(){
+      console.log(this.$route.query)
+    }
   }
 </script>
 

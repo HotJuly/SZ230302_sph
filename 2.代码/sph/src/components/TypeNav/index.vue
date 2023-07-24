@@ -6,29 +6,35 @@
             @mouseleave="handleLeave"
             >
                 <h2 class="all">全部商品分类</h2>
-                <div class="sort" v-show="isShowSort">
-                    <div class="all-sort-list2" @click.prevent="toSearch">
-                        <div class="item" v-for="c1 in categoryList" :key="c1.categoryId">
-                            <h3>
-                                <a href="">{{ c1.categoryName }}</a>
-                            </h3>
-                            <div class="item-list clearfix">
-                                <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
-                                    <dl class="fore">
-                                        <dt>
-                                            <a href="">{{ c2.categoryName }}</a>
-                                        </dt>
-                                        <dd>
-                                            <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                                                <a href="">{{ c3.categoryName }}</a>
-                                            </em>
-                                        </dd>
-                                    </dl>
+
+                <transition 
+                    enter-active-class="animate__fadeIn"
+                    leave-active-class="animate__fadeOut"
+                >
+                    <div class="sort animate__animated" v-show="isShowSort">
+                        <div class="all-sort-list2" @click.prevent="toSearch">
+                            <div class="item" v-for="c1 in categoryList" :key="c1.categoryId">
+                                <h3>
+                                    <a href="" :data-id="c1.categoryId" data-level="1">{{ c1.categoryName }}</a>
+                                </h3>
+                                <div class="item-list clearfix">
+                                    <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
+                                        <dl class="fore">
+                                            <dt>
+                                                <a href="" :data-id="c2.categoryId" data-level="2">{{ c2.categoryName }}</a>
+                                            </dt>
+                                            <dd>
+                                                <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                                                    <a href="" :data-id="c3.categoryId" data-level="3">{{ c3.categoryName }}</a>
+                                                </em>
+                                            </dd>
+                                        </dl>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </transition>
             </div>
             <nav class="nav">
                 <a href="###">服装城</a>
@@ -45,6 +51,7 @@
 </template>
 
 <script>
+import 'animate.css';
 import { mapState } from 'vuex';
 export default {
     name: 'TypeNav',
@@ -68,9 +75,34 @@ export default {
         }, 3000)
     },
     methods: {
-        toSearch() {
+        toSearch(event) {
+            // 需要实现路由传参
+            // 一共需要收集三个数据
+            // 1.当前的分类id
+            // 2.当前分类的级别
+            // 3.当前分类的名称
+
+            const {id,level} = event.target.dataset;
+            // console.log(id,level,event.target.innerText)
             // 后面项目还有很多代码要写
-            this.$router.push('/search')
+            // this.$router.push({
+            //     path:"/search",
+            //     query:{
+            //         categoryName:event.target.innerText,
+            //         id,
+            //         level
+            //     }
+            // })
+
+            const key = `category${level}Id`;
+
+            this.$router.push({
+                path:"/search",
+                query:{
+                    categoryName:event.target.innerText,
+                    [key]:id
+                }
+            })
         },
         handleEnter() {
             this.isShowSort = true;
@@ -157,6 +189,8 @@ export default {
             background: #fafafa;
             z-index: 999;
 
+            --animate-duration:1s;
+
             .all-sort-list2 {
                 .item {
                     h3 {
@@ -235,5 +269,42 @@ export default {
             }
         }
     }
+}
+
+/*TypeNav的样式*/
+h3 {
+  line-height: 30px;
+  font-size: 14px;
+  font-weight: 400;
+  overflow: hidden;
+  padding: 0 20px;
+  margin: 0;
+	&:hover{
+		background-color: #e1251b;
+		a{
+			color: white;
+		}
+	}
+  a {
+    color: #333;
+  }
+}
+
+dd{
+  /*********/
+  width: 520px;
+  /*********/
+}
+dt{
+  /*********/
+  width: 68px;
+  /*********/
+}
+
+/*reset.css*/
+/* 重置文本格式元素 */
+a:link:hover{
+    color : rgb(79, 76, 212) !important;
+    text-decoration: none;
 }
 </style>
