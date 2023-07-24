@@ -20,12 +20,16 @@ export default new VueRouter({
             path:"/home",
             component:Home,
             meta:{
-                isShowTypeNav:true
+                isShowTypeNav:true,
+                isShowFooter:true
             }
         },
         {
             path:"/cart",
-            component:Cart
+            component:Cart,
+            meta:{
+                isShowFooter:true
+            }
         },
         {
             path:"/login",
@@ -39,7 +43,8 @@ export default new VueRouter({
             path:"/search",
             component:Search,
             meta:{
-                isShowTypeNav:true
+                isShowTypeNav:true,
+                isShowFooter:true
             }
         },
         {

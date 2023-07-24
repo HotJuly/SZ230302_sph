@@ -1,10 +1,13 @@
 <template>
     <div class="type-nav">
         <div class="container">
-            <div class="nav-left">
+            <div class="nav-left" 
+            @mouseenter="handleEnter"
+            @mouseleave="handleLeave"
+            >
                 <h2 class="all">全部商品分类</h2>
-                <div class="sort">
-                    <div class="all-sort-list2"  @click.prevent="toSearch">
+                <div class="sort" v-show="isShowSort">
+                    <div class="all-sort-list2" @click.prevent="toSearch">
                         <div class="item" v-for="c1 in categoryList" :key="c1.categoryId">
                             <h3>
                                 <a href="">{{ c1.categoryName }}</a>
@@ -42,13 +45,14 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import { mapState } from 'vuex';
 export default {
     name: 'TypeNav',
     data() {
         return {
             // categoryList:[],
-            // msg:123
+            // msg:123m
+            isShowSort: this.$route.path==="/home"
         }
     },
     async mounted() {
@@ -59,21 +63,40 @@ export default {
 
         this.$store.dispatch('home/getCategoryList');
 
-        setTimeout(()=>{
-            console.log('categoryList',this.categoryList)
-        },3000)
+        setTimeout(() => {
+            console.log('categoryList', this.categoryList)
+        }, 3000)
     },
-    methods:{
-        toSearch(){
+    methods: {
+        toSearch() {
             // 后面项目还有很多代码要写
             this.$router.push('/search')
+        },
+        handleEnter() {
+            this.isShowSort = true;
+        },
+        handleLeave(){
+            // 其实鼠标移出的时候,也不一定是隐藏,也要看当前所在的页面
+            this.isShowSort = this.$route.path==="/home";
         }
     },
-    watch:{
+    watch: {
         // msg(){
         // }
+        "$route.path"(newVal,oldVal){
+            // watch回调函数,会接收到两个参数
+            // 第一个是本次最新的数据,第二个是上一次的旧数据
+            // if(newVal==="/home"){
+            //     // 能进入这里,就说明正在首页
+            //     this.isShowSort = true;
+            // }else{
+            //     this.isShowSort = false;
+            // }
+
+            this.isShowSort = newVal === "/home";
+        }
     },
-    computed:{
+    computed: {
         // abc(){
         //     console.log('abc')
         //     return this.msg;
@@ -88,7 +111,7 @@ export default {
         //     categoryList:"categoryList"
         // }),
         // 获取到Vuex中state数据的第三种方法,使用频率最高,因为它最方便
-        ...mapState('home',["categoryList"]),
+        ...mapState('home', ["categoryList"]),
     }
 }
 </script>

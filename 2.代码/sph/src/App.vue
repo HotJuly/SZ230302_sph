@@ -10,7 +10,7 @@
         <router-view></router-view>
 
         <!-- Footer区域 -->
-        <Footer/>
+        <Footer v-show="$route.meta.isShowFooter"/>
     </div>
 </template>
 
