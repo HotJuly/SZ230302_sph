@@ -125,7 +125,8 @@ export default {
                     delay: 2000
                 },
                 pagination: {
-                    el: '.swiper-pagination'
+                    el: '.swiper-pagination',
+                    clickable:true
                 },
                 navigation: {
                     nextEl: '.swiper-button-next',

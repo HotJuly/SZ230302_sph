@@ -7,7 +7,7 @@ const state = {
 // 该函数只能书写同步代码
 const mutations = {
     SET_CATEGORY_LIST(state,categoryList){
-        state.categoryList = categoryList;
+        state.categoryList = categoryList.slice(0,15);
     }
 };
 
