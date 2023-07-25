@@ -11,9 +11,11 @@
                         v-for="banner in slideList"
                         :key="banner.id"
                         >
-                            <!-- <img :src="banner.imgUrl" /> -->
+                            <img :src="banner.imgUrl" />
+
+                            <!-- 以下代码用于分析静态src和动态src的区别 -->
                             <!-- <img src="./images/banner1.jpg" /> -->
-                            <img :src="src" />
+                            <!-- <img :src="src" /> -->
                         </div>
                     </div>
                     <!-- 如果需要分页器 -->
@@ -113,7 +115,7 @@ export default {
     data(){
         return{
             slideList:[],
-            src:"./images/banner1.jpg"
+            // src:"./images/banner1.jpg"
         }
     },
     async mounted(){
