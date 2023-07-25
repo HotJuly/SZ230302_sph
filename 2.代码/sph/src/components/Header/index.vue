@@ -69,8 +69,7 @@ export default {
       
       */
 
-
-
+      console.log(this)
       this.$router.push({
         path:'/search',
         query:{

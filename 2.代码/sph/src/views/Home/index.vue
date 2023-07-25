@@ -1,20 +1,17 @@
 <template>
   <div class="home">
-    <!-- 商品分类导航 -->
-    <!-- <TypeNav/> -->
-    <h1>
-      Home
-    </h1>
+
+    <ListContainer/>
   </div>
 </template>
 
 <script>
-// import TypeNav from './components/TypeNav';
+import ListContainer from './components/ListContainer';
 export default {
   name: 'Home',
-  // components:{
-  //   TypeNav
-  // }
+  components:{
+    ListContainer
+  }
 }
 </script>
 

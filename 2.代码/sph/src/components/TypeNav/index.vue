@@ -96,6 +96,7 @@ export default {
             // if(target.matches('a')){
             if (id) {
                 const key = `category${level}Id`;
+                console.log(key)
 
                 this.$router.push({
                     path: "/search",

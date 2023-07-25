@@ -8,6 +8,8 @@ import TypeNav from './components/TypeNav';
 import router from '@/router';
 import store from '@/store';
 
+import '@/mock';
+
 import * as API from '@/api';
 
 Vue.prototype.$API = API;
