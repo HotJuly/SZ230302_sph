@@ -68,9 +68,13 @@ export default {
           实际原因:返回Promise对象变为了失败状态,所以导致控制台出现报错
       
       */
+
+
+
       this.$router.push({
         path:'/search',
         query:{
+          ...this.$route.query,
           keyword:this.keyword
         }
       })

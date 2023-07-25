@@ -100,6 +100,14 @@ export default {
                 this.$router.push({
                     path: "/search",
                     query: {
+                        // 在路径中,使用query传参的数据一共只有三大种
+                        // 1.分类名称
+                        // 2.分类id
+                        // 3.关键字
+
+                        // 分类的id属性名很有可能不一样,因为用户上次点击1级分类,这次可以点击2级分类,会出现同时保留两个分类id的效果
+                        // 所以不要使用...this.$route.query
+                        keyword:this.$route.query.keyword,
                         categoryName: event.target.innerText,
                         [key]: id
                     }
