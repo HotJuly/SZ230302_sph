@@ -90,7 +90,7 @@ export default {
             //  1.点击的必须是a标签才跳转
 
             // 获取到当前的目标元素
-            const target = event.target;
+            // const target = event.target;
 
             // 对目标元素的身份进行区分,如果是a标签就跳转
             // if(target.matches('a')){
@@ -299,7 +299,7 @@ h3 {
         background-color: #e1251b;
 
         a {
-            color: white;
+            color: white!important;;
         }
     }
 

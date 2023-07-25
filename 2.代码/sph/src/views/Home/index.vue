@@ -3,13 +3,25 @@
 
     <ListContainer/>
 
+    <Recommend/>
+
+    <Rank/>
+
+    <Like/>
+
     <Floor :floor="floor" v-for="floor in floorList" :key="floor.id"/>
+
+    <Brand/>
   </div>
 </template>
 
 <script>
 import ListContainer from './components/ListContainer';
 import Floor from './components/Floor';
+import Brand from './components/Brand';
+import Like from './components/Like';
+import Rank from './components/Rank';
+import Recommend from './components/Recommend';
 export default {
   name: 'Home',
   data(){
@@ -23,7 +35,11 @@ export default {
   },
   components:{
     ListContainer,
-    Floor
+    Floor,
+    Brand,
+    Like,
+    Rank,
+    Recommend
   }
 }
 </script>

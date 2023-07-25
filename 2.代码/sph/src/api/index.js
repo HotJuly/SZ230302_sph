@@ -5,5 +5,6 @@
 // export const test = test1;
 
 export { default as home } from './modules/home';
+export { default as search } from './modules/search';
 export { default as test } from './modules/test';
 
