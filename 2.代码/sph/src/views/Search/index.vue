@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import SearchSelector from './SearchSelector'
+import SearchSelector from './components/SearchSelector'
 export default {
 	name: 'Search',
 	data() {
