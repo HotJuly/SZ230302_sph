@@ -4,27 +4,29 @@
         <div class="sortList clearfix">
             <div class="center">
                 <!--banner轮播-->
-                <div class="swiper-container" id="mySwiper">
-                    <div class="swiper-wrapper">
-                        <div 
-                        class="swiper-slide" 
-                        v-for="banner in slideList"
-                        :key="banner.id"
-                        >
-                            <img :src="banner.imgUrl" />
 
-                            <!-- 以下代码用于分析静态src和动态src的区别 -->
-                            <!-- <img src="./images/banner1.jpg" /> -->
-                            <!-- <img :src="src" /> -->
-                        </div>
-                    </div>
-                    <!-- 如果需要分页器 -->
-                    <div class="swiper-pagination"></div>
+                <!-- <swiper class="swiper-container">
+                    <swiper-slide>Slide 1</swiper-slide>
+                    <swiper-slide>Slide 2</swiper-slide>
+                    <swiper-slide>Slide 3</swiper-slide>
+                </swiper> -->
 
-                    <!-- 如果需要导航按钮 -->
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-button-next"></div>
-                </div>
+                <swiper class="swiper-container" :options="swiperOptions">
+                    <swiper-slide class="swiper-slide" v-for="banner in slideList" :key="banner.id">
+                        <img :src="banner.imgUrl" />
+
+                        <!-- 以下代码用于分析静态src和动态src的区别 -->
+                        <!-- <img src="./images/banner1.jpg" /> -->
+                        <!-- <img :src="src" /> -->
+                    </swiper-slide>
+
+                    <!-- 这是分页器 -->
+                    <div class="swiper-pagination" slot="pagination"></div>
+
+                    <!-- 这是前进后退按钮 -->
+                    <div class="swiper-button-prev" slot="button-prev"></div>
+                    <div class="swiper-button-next" slot="button-next"></div>
+                </swiper>
             </div>
             <div class="right">
                 <div class="news">
@@ -110,19 +112,38 @@
 </template>
 
 <script>
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+import 'swiper/css/swiper.css';
 export default {
     name: 'ListContainer',
-    data(){
-        return{
-            slideList:[],
+    data() {
+        return {
+            slideList: [],
+            swiperOptions: {
+                loop: true,
+                autoplay: {
+                    delay: 2000
+                },
+                pagination: {
+                    el: '.swiper-pagination'
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            }
             // src:"./images/banner1.jpg"
         }
     },
-    async mounted(){
+    async mounted() {
         const result = await this.$API.home.reqSlide();
         // console.log(result)
 
         this.slideList = result;
+    },
+    components: {
+        Swiper,
+        SwiperSlide
     }
 }
 </script>
@@ -298,5 +319,9 @@ export default {
             }
         }
     }
+}
+
+.swiper-container {
+    height: 100%;
 }
 </style>
