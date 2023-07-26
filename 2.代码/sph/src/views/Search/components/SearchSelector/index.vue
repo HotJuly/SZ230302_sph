@@ -17,7 +17,11 @@
 			<div class="fl key">{{ attr.attrName }}</div>
 			<div class="fl value">
 				<ul class="type-list">
-					<li v-for="attrValue in attr.attrValueList" :key="attrValue">
+					<li 
+					v-for="attrValue in attr.attrValueList" 
+					@click="selectAttr(attr,attrValue)"
+					:key="attrValue"
+					>
 						<a>{{ attrValue }}</a>
 					</li>
 				</ul>
@@ -35,6 +39,10 @@
 			selectTrademark(tm){
 				// console.log(1,tm)
 				this.$emit('getTrademark',tm);
+			},
+			selectAttr(attr,attrValue){
+				// console.log('selectAttr',attr,attrValue)
+				this.$emit('getAttr',attr,attrValue);
 			}
 		}
 	}

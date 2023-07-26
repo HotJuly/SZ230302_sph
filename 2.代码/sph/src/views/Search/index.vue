@@ -22,6 +22,14 @@
 							品牌:{{ searchParams.trademark.split(':')[1] }}
 							<i @click="removeTrademark">×</i>
 						</li>
+						<li 
+						class="with-x" 
+						v-for="(attr,index) in searchParams.props"
+						:key="attr"
+						>
+							{{attr.split(':')[2]}}:{{ attr.split(':')[1] }}
+							<i @click="removeAttr(index)">×</i>
+						</li>
 					</ul>
 				</div>
 
@@ -30,6 +38,7 @@
 				:attrsList="attrsList" 
 				:trademarkList="trademarkList" 
 				@getTrademark="saveTrademark"
+				@getAttr="saveAttr"
 				/>
 
 				<!--商品展示区-->
@@ -149,6 +158,8 @@ export default {
 				categoryName: undefined,
 				keyword: undefined,
 
+				// 用于收集当前用户选中的商品属性
+				props:[],
 
 				// 用于收集当前用户选中的品牌信息
 				trademark:"",
@@ -253,6 +264,16 @@ export default {
 		removeTrademark(){
 			this.searchParams.trademark = '';
 		},
+		removeAttr(index){
+			// console.log(1)
+			// 注意,在Vue中,不要直接通过数组的下标修改内部的数据
+			// 因为这样的操作没有响应式效果
+			// Vue也知道自己有这样的问题,所以他对数组的7个方法进行了重写
+			// push,pop,shift,unshift,sort,reverse,splice
+			// 重写:它具有原先的效果,同时还增加了响应式的效果
+			// this.searchParams.props[index]=undefined;
+			this.searchParams.props.splice(index,1);
+		},
 		async reqSearchInfo() {
 			const { goodsList, trademarkList, attrsList } = await this.$API.search.reqList(this.searchParams);
 			// console.log(result)
@@ -266,6 +287,30 @@ export default {
 		},
 		saveTrademark(tm){
 			this.searchParams.trademark = `${tm.tmId}:${tm.tmName}`
+		},
+		saveAttr(attr,attrValue){
+			// console.log('Search',attr,attrValue)
+			// 1.根据现有数据,拼接处服务器想要的数据
+			// 注意!!!!此处要求的格式是 ID:属性值:属性名
+			const str = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+			// console.log(str)
+
+			// 2.将数据推入searchParams对象的props数组中
+			// 延伸效果:如果本次需要推入的数据已经存在,就不推入该数据(保证数据不重复)
+			// 已存在的意思:str的数据,在props数组中,已经具有相同的内容
+			// 想知道数组内部是否存在某个东西:find,indexOf,includes,some,every
+			// find->会返回符合条件的内容
+			// indexOf->返回符合条件的内容的下标
+			// includes->返回布尔值,true代表存在,false代表不存在
+			// some->数组里面的东西,至少有一个满足条件,就返回true
+			// evety->数组里面的东西,所有内容都满足条件,就返回true
+
+			const result = this.searchParams.props.includes(str);
+
+			// 如果有存在,就不推入数据
+			if(result)return;
+
+			this.searchParams.props.push(str);
 		}
 	},
 	components: {
