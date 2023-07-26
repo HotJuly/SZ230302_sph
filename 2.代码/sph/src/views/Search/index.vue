@@ -177,7 +177,17 @@ export default {
 
 				// assign方法可以传入无数个对象
 				// 他会将第二个对象开始的所有属性,全部传入第一个对象中
-				Object.assign(this.searchParams, this.$route.query);
+				// console.log('query',this.$route.query)
+
+				// 第二个对象是空对象的作用,是用于清空searchParams中,与query相关所有数据
+				// 然后第三个对象就是当前最新的query数据,将其注入到searchParams中
+				Object.assign(this.searchParams,{
+					category1Id:undefined,
+					category2Id:undefined,
+					category3Id:undefined,
+					categoryName:undefined,
+					keyword:undefined
+				}, this.$route.query);
 			}
 		},
 		// watch本身是浅监视,他只会监视某个属性值有没有变化
@@ -193,18 +203,32 @@ export default {
 	},
 	methods: {
 		removeKeyword() {
-			this.searchParams.keyword = undefined;
-
+			// this.searchParams.keyword = undefined;
+			this.$router.push({
+				path:'/search',
+				query:{
+					...this.$route.query,
+					keyword:undefined
+				}
+			})
 		},
 		removeCategory() {
 			// this.searchParams.categoryName=undefined;
 
-			Object.assign(this.searchParams, {
-				category1Id: undefined,
-				category2Id: undefined,
-				category3Id: undefined,
-				categoryName: undefined
-			})
+			// Object.assign(this.searchParams, {
+			// 	category1Id: undefined,
+			// 	category2Id: undefined,
+			// 	category3Id: undefined,
+			// 	categoryName: undefined
+			// })
+
+			
+			this.$router.push({
+				path:'/search',
+				query:{
+					keyword:this.$route.query.keyword
+				}
+			});
 
 		},
 		async reqSearchInfo() {
