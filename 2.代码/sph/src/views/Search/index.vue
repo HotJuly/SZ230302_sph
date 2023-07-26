@@ -10,15 +10,19 @@
 						</li>
 					</ul>
 					<ul class="fl sui-tag">
-						<li class="with-x">手机</li>
-						<li class="with-x">iphone<i>×</i></li>
-						<li class="with-x">华为<i>×</i></li>
-						<li class="with-x">OPPO<i>×</i></li>
+						<li class="with-x" v-show="searchParams.keyword">
+							关键字:{{ searchParams.keyword }}
+							<i @click="removeKeyword">×</i>
+						</li>
+						<li class="with-x" v-show="searchParams.categoryName">
+							分类:{{ searchParams.categoryName }}
+							<i @click="removeCategory">×</i>
+						</li>
 					</ul>
 				</div>
 
 				<!-- 搜索器 -->
-				<SearchSelector />
+				<SearchSelector :attrsList="attrsList" :trademarkList="trademarkList" />
 
 				<!--商品展示区-->
 				<div class="details clearfix">
@@ -173,17 +177,46 @@ export default {
 
 				// assign方法可以传入无数个对象
 				// 他会将第二个对象开始的所有属性,全部传入第一个对象中
-				Object.assign(this.searchParams,this.$route.query);
-
-				const { goodsList, trademarkList, attrsList } = await this.$API.search.reqList(newVal);
-				// console.log(result)
-
-				// 存储当前符合条件的商品列表
-				this.goodsList = goodsList;
-
-				this.trademarkList = trademarkList;
-				this.attrsList = attrsList;
+				Object.assign(this.searchParams, this.$route.query);
 			}
+		},
+		// watch本身是浅监视,他只会监视某个属性值有没有变化
+		// 例如searchParams,他的属性值是一个对象的地址值
+		// 只要不更换该对象,那么这个watch就不会重新执行
+		searchParams: {
+			deep: true,
+			immediate:true,
+			handler() {
+				this.reqSearchInfo();
+			}
+		}
+	},
+	methods: {
+		removeKeyword() {
+			this.searchParams.keyword = undefined;
+
+		},
+		removeCategory() {
+			// this.searchParams.categoryName=undefined;
+
+			Object.assign(this.searchParams, {
+				category1Id: undefined,
+				category2Id: undefined,
+				category3Id: undefined,
+				categoryName: undefined
+			})
+
+		},
+		async reqSearchInfo() {
+			const { goodsList, trademarkList, attrsList } = await this.$API.search.reqList(this.searchParams);
+			// console.log(result)
+
+			// 存储当前符合条件的商品列表
+			this.goodsList = goodsList;
+
+			this.trademarkList = trademarkList;
+
+			this.attrsList = attrsList;
 		}
 	},
 	components: {
