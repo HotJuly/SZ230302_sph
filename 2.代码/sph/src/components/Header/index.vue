@@ -52,6 +52,13 @@ export default {
       keyword:undefined
     }
   },
+  mounted(){
+    // 箭头函数的this非常特殊,与作用域有关
+    // 他会使用外层作用域的this
+    this.$bus.$on('clearKeyword',()=>{
+      this.keyword = undefined;
+    })
+  },
   methods: {
     toSearch() {
       // push方法跳转路由,会保留上一个历史记录,所以可以返回上一个路由
@@ -69,7 +76,7 @@ export default {
       
       */
 
-      console.log(this)
+      // console.log(this)
       this.$router.push({
         path:'/search',
         query:{

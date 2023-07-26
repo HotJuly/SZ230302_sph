@@ -204,9 +204,15 @@ export default {
 	methods: {
 		removeKeyword() {
 			// this.searchParams.keyword = undefined;
+
+			this.$bus.$emit('clearKeyword');
+
 			this.$router.push({
 				path:'/search',
 				query:{
+					// 获取到跳转之前的参数
+					// 因为参数如果还没有解析结束,那么push函数是没办法执行内部代码的
+					// 所以这里获取query对象的时候,其实路由还没有跳转
 					...this.$route.query,
 					keyword:undefined
 				}
@@ -221,7 +227,6 @@ export default {
 			// 	category3Id: undefined,
 			// 	categoryName: undefined
 			// })
-
 			
 			this.$router.push({
 				path:'/search',
