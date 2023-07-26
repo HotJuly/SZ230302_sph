@@ -22,24 +22,16 @@
 							品牌:{{ searchParams.trademark.split(':')[1] }}
 							<i @click="removeTrademark">×</i>
 						</li>
-						<li 
-						class="with-x" 
-						v-for="(attr,index) in searchParams.props"
-						:key="attr"
-						>
-							{{attr.split(':')[2]}}:{{ attr.split(':')[1] }}
+						<li class="with-x" v-for="(attr, index) in searchParams.props" :key="attr">
+							{{ attr.split(':')[2] }}:{{ attr.split(':')[1] }}
 							<i @click="removeAttr(index)">×</i>
 						</li>
 					</ul>
 				</div>
 
 				<!-- 搜索器 -->
-				<SearchSelector 
-				:attrsList="attrsList" 
-				:trademarkList="trademarkList" 
-				@getTrademark="saveTrademark"
-				@getAttr="saveAttr"
-				/>
+				<SearchSelector :attrsList="attrsList" :trademarkList="trademarkList" @getTrademark="saveTrademark"
+					@getAttr="saveAttr" />
 
 				<!--商品展示区-->
 				<div class="details clearfix">
@@ -100,35 +92,12 @@
 						</ul>
 					</div>
 					<!-- 分页器 -->
-					<div class="fr page">
-						<div class="sui-pagination clearfix">
-							<ul>
-								<li class="prev disabled">
-									<a href="#">«上一页</a>
-								</li>
-								<li class="active">
-									<a href="#">1</a>
-								</li>
-								<li>
-									<a href="#">2</a>
-								</li>
-								<li>
-									<a href="#">3</a>
-								</li>
-								<li>
-									<a href="#">4</a>
-								</li>
-								<li>
-									<a href="#">5</a>
-								</li>
-								<li class="dotted"><span>...</span></li>
-								<li class="next">
-									<a href="#">下一页»</a>
-								</li>
-							</ul>
-							<div><span>共10页&nbsp;</span></div>
-						</div>
-					</div>
+					<Pagination 
+					:total="116" 
+					:totalPages="12"
+					:pageNo="5"
+					:continues="5"
+					/>
 				</div>
 			</div>
 		</div>
@@ -137,6 +106,7 @@
 
 <script>
 import SearchSelector from './components/SearchSelector'
+import Pagination from './components/Pagination'
 export default {
 	name: 'Search',
 	data() {
@@ -150,6 +120,12 @@ export default {
 			// 存储当前可选择的商品品牌列表
 			trademarkList: [],
 
+			// 用于存储当前一共具有多少条数据
+			total: 0,
+
+			// 用于存储当前一共具有多少页数据
+			totalPages: 0,
+
 			// 专门用于收集搜索请求相关的所有参数
 			searchParams: {
 				category1Id: undefined,
@@ -159,10 +135,10 @@ export default {
 				keyword: undefined,
 
 				// 用于收集当前用户选中的商品属性
-				props:[],
+				props: [],
 
 				// 用于收集当前用户选中的品牌信息
-				trademark:"",
+				trademark: "",
 
 				// 控制请求当前页数
 				pageNo: 1,
@@ -206,12 +182,12 @@ export default {
 
 				// 第二个对象是空对象的作用,是用于清空searchParams中,与query相关所有数据
 				// 然后第三个对象就是当前最新的query数据,将其注入到searchParams中
-				Object.assign(this.searchParams,{
-					category1Id:undefined,
-					category2Id:undefined,
-					category3Id:undefined,
-					categoryName:undefined,
-					keyword:undefined
+				Object.assign(this.searchParams, {
+					category1Id: undefined,
+					category2Id: undefined,
+					category3Id: undefined,
+					categoryName: undefined,
+					keyword: undefined
 				}, this.$route.query);
 			}
 		},
@@ -220,7 +196,7 @@ export default {
 		// 只要不更换该对象,那么这个watch就不会重新执行
 		searchParams: {
 			deep: true,
-			immediate:true,
+			immediate: true,
 			handler() {
 				this.reqSearchInfo();
 			}
@@ -233,13 +209,13 @@ export default {
 			this.$bus.$emit('clearKeyword');
 
 			this.$router.push({
-				path:'/search',
-				query:{
+				path: '/search',
+				query: {
 					// 获取到跳转之前的参数
 					// 因为参数如果还没有解析结束,那么push函数是没办法执行内部代码的
 					// 所以这里获取query对象的时候,其实路由还没有跳转
 					...this.$route.query,
-					keyword:undefined
+					keyword: undefined
 				}
 			})
 		},
@@ -252,19 +228,19 @@ export default {
 			// 	category3Id: undefined,
 			// 	categoryName: undefined
 			// })
-			
+
 			this.$router.push({
-				path:'/search',
-				query:{
-					keyword:this.$route.query.keyword
+				path: '/search',
+				query: {
+					keyword: this.$route.query.keyword
 				}
 			});
 
 		},
-		removeTrademark(){
+		removeTrademark() {
 			this.searchParams.trademark = '';
 		},
-		removeAttr(index){
+		removeAttr(index) {
 			// console.log(1)
 			// 注意,在Vue中,不要直接通过数组的下标修改内部的数据
 			// 因为这样的操作没有响应式效果
@@ -272,10 +248,10 @@ export default {
 			// push,pop,shift,unshift,sort,reverse,splice
 			// 重写:它具有原先的效果,同时还增加了响应式的效果
 			// this.searchParams.props[index]=undefined;
-			this.searchParams.props.splice(index,1);
+			this.searchParams.props.splice(index, 1);
 		},
 		async reqSearchInfo() {
-			const { goodsList, trademarkList, attrsList } = await this.$API.search.reqList(this.searchParams);
+			const { goodsList, trademarkList, attrsList, total, totalPages } = await this.$API.search.reqList(this.searchParams);
 			// console.log(result)
 
 			// 存储当前符合条件的商品列表
@@ -284,11 +260,15 @@ export default {
 			this.trademarkList = trademarkList;
 
 			this.attrsList = attrsList;
+
+			this.total = total;
+
+			this.totalPages = totalPages;
 		},
-		saveTrademark(tm){
+		saveTrademark(tm) {
 			this.searchParams.trademark = `${tm.tmId}:${tm.tmName}`
 		},
-		saveAttr(attr,attrValue){
+		saveAttr(attr, attrValue) {
 			// console.log('Search',attr,attrValue)
 			// 1.根据现有数据,拼接处服务器想要的数据
 			// 注意!!!!此处要求的格式是 ID:属性值:属性名
@@ -308,13 +288,14 @@ export default {
 			const result = this.searchParams.props.includes(str);
 
 			// 如果有存在,就不推入数据
-			if(result)return;
+			if (result) return;
 
 			this.searchParams.props.push(str);
 		}
 	},
 	components: {
-		SearchSelector
+		SearchSelector,
+		Pagination
 	}
 }
 </script>
