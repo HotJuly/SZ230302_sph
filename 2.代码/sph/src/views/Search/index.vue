@@ -18,11 +18,19 @@
 							分类:{{ searchParams.categoryName }}
 							<i @click="removeCategory">×</i>
 						</li>
+						<li class="with-x" v-show="searchParams.trademark">
+							品牌:{{ searchParams.trademark.split(':')[1] }}
+							<i @click="removeTrademark">×</i>
+						</li>
 					</ul>
 				</div>
 
 				<!-- 搜索器 -->
-				<SearchSelector :attrsList="attrsList" :trademarkList="trademarkList" />
+				<SearchSelector 
+				:attrsList="attrsList" 
+				:trademarkList="trademarkList" 
+				@getTrademark="saveTrademark"
+				/>
 
 				<!--商品展示区-->
 				<div class="details clearfix">
@@ -141,7 +149,13 @@ export default {
 				categoryName: undefined,
 				keyword: undefined,
 
+
+				// 用于收集当前用户选中的品牌信息
+				trademark:"",
+
+				// 控制请求当前页数
 				pageNo: 1,
+				// 控制当前页面显示数据条数
 				pageSize: 10
 			}
 		}
@@ -236,6 +250,9 @@ export default {
 			});
 
 		},
+		removeTrademark(){
+			this.searchParams.trademark = '';
+		},
 		async reqSearchInfo() {
 			const { goodsList, trademarkList, attrsList } = await this.$API.search.reqList(this.searchParams);
 			// console.log(result)
@@ -246,6 +263,9 @@ export default {
 			this.trademarkList = trademarkList;
 
 			this.attrsList = attrsList;
+		},
+		saveTrademark(tm){
+			this.searchParams.trademark = `${tm.tmId}:${tm.tmName}`
 		}
 	},
 	components: {
