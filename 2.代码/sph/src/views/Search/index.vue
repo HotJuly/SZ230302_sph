@@ -92,10 +92,17 @@
 						</ul>
 					</div>
 					<!-- 分页器 -->
+					<!-- <Pagination 
+					:total="total" 
+					:totalPages="totalPages"
+					:pageNo="searchParams.pageNo"
+					:continues="5"
+					@changePageNo="changePageNo"
+					/> -->
 					<Pagination 
-					:total="116" 
-					:totalPages="13"
-					:pageNo="6"
+					:total="total" 
+					:totalPages="totalPages"
+					:pageNo.sync="searchParams.pageNo"
 					:continues="5"
 					/>
 				</div>
@@ -291,6 +298,11 @@ export default {
 			if (result) return;
 
 			this.searchParams.props.push(str);
+		},
+		changePageNo(data){
+			// console.log('Search的changePageNo',data)
+
+			this.searchParams.pageNo = data;
 		}
 	},
 	components: {

@@ -24,9 +24,46 @@
 
 
         <!-- 最新写法 -->
-        <button :class="{
+        <!-- 如果当前用户正处在第1页,就不应该能点击上一页 -->
+        <button 
+        :disabled="pageNo===1"
+        @click="changePageNo(pageNo-1)"
+        >上一页</button>
+
+        <!-- 如果当前v-for遍历出来的是2开始,那么才显示这个按钮 -->
+        <button 
+        v-show="startEnd.start>=2"
+        @click="changePageNo(1)"
+        >1</button>
+
+        <!-- 如果当前v-for的开始按钮,与1按钮之间,具有间隔数字才显示 -->
+        <span v-show="startEnd.start>=3">···</span>
+
+        <button 
+        :class="{
             active: pageNo === index + startEnd.start
-        }" v-for="(num, index) in (startEnd.end - startEnd.start + 1)" :key="num">{{ index + startEnd.start }}</button>
+        }" 
+        v-for="(num, index) in (startEnd.end - startEnd.start + 1)" 
+        @click="changePageNo(index + startEnd.start)"
+        :key="num"
+        >{{ index + startEnd.start }}
+        </button>
+
+        <!-- 如果当前v-for的结束按钮,与最后一页的按钮之间具有间隔,就显示... -->
+        <span v-show="totalPages - startEnd.end>=2">···</span>
+
+        <!-- 如果当前v-for已经展示了最后一页的按钮,此处就不应该在显示一个 -->
+        <button 
+        v-show="startEnd.end!==totalPages"
+        @click="changePageNo(totalPages)"
+        >{{ totalPages }}</button>
+
+        <!-- 如果当前正处在最后1页,就不能使用下一页按钮 -->
+        <button 
+        :disabled="pageNo===totalPages"
+        @click="changePageNo(pageNo+1)"
+        >下一页</button>
+
         <span>共 {{ total }} 条</span>
     </div>
 </template>
@@ -90,14 +127,16 @@ export default {
 
                 end = pageNo + (continues - 1) / 2;
 
-                if(start<1){
+                // 如果开始页数小于1,就从第1页开始显示,显示到第5页结束
+                if (start < 1) {
                     start = 1;
                     end = continues;
                 }
 
-                if(end>totalPages){
-                    end=totalPages;
-                    start=totalPages - continues + 1
+                // 如果结束页数大于总页数,就从显示到总页数为止
+                if (end > totalPages) {
+                    end = totalPages;
+                    start = totalPages - continues + 1
                 }
             }
 
@@ -106,6 +145,11 @@ export default {
                 start,
                 end
             }
+        }
+    },
+    methods:{
+        changePageNo(currentPageNo){
+            this.$emit('update:pageNo',currentPageNo)
         }
     }
 };
