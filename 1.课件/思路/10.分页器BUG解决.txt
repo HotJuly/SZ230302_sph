@@ -1,12 +1,25 @@
 问题1:如果当前需要显示的连续页数,超过了数据的总页数,显示个数不对
 解决思路:应该要以总页数为准
 
+totalPages:3
+pageNo:2
+continues:5
+
+
 问题2:如果当前正在第1页,那么连续页数的第一个按钮会显示-1
 原因:是因为pageNo为1,而continues为5,那么计算得到的start就是-1
 
 解决思路:如果当前正在第1页,那么start应该为1
 
-问题1:如果当前的end超过了总页数,会显示到end
+totalPages:13
+pageNo:1
+continues:5
+
+问题3:如果当前的end超过了总页数,会显示到end
 原因:因为当前计算属性startEnd没有考虑极限值的情况
 
 解决思路:如果当前end超过了总页数,就应该只显示到总页数
+
+totalPages:13
+pageNo:13
+continues:5
