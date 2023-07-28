@@ -39,23 +39,34 @@
 					<div class="sui-navbar">
 						<div class="navbar-inner filter">
 							<ul class="sui-nav">
-								<li class="active">
-									<a href="#">综合</a>
+								<li 
+								:class="{
+									active:orderType==='1'
+								}"
+								@click="changeOrder(1)"
+								>
+									<a>
+										综合
+										<i 
+										v-show="orderType==='1'" 
+										class="iconfont"
+										:class="iconName"
+										></i>
+									</a>
 								</li>
-								<li>
-									<a href="#">销量</a>
-								</li>
-								<li>
-									<a href="#">新品</a>
-								</li>
-								<li>
-									<a href="#">评价</a>
-								</li>
-								<li>
-									<a href="#">价格⬆</a>
-								</li>
-								<li>
-									<a href="#">价格⬇</a>
+								<li 
+								:class="{
+									active:orderType==='2'
+								}"
+								@click="changeOrder(2)"
+								>
+									<a>
+										价格
+										<i v-show="orderType==='2'" 
+										class="iconfont"
+										:class="iconName"
+										></i>
+									</a>
 								</li>
 							</ul>
 						</div>
@@ -66,7 +77,7 @@
 							<li class="yui3-u-1-5" v-for="good in goodsList" :key="good.id">
 								<div class="list-wrap">
 									<div class="p-img">
-										<a href="item.html" target="_blank">
+										<a @click="toDetail(good)">
 											<img :src="good.defaultImg" /></a>
 									</div>
 									<div class="price">
@@ -76,7 +87,7 @@
 										</strong>
 									</div>
 									<div class="attr">
-										<router-link to="/detail">
+										<router-link :to="`/detail/${good.id}`">
 											{{ good.title }}</router-link>
 									</div>
 									<div class="commit">
@@ -147,6 +158,9 @@ export default {
 				// 用于收集当前用户选中的品牌信息
 				trademark: "",
 
+				// 用于存储当前商品的排序规则
+				order:"1:desc",
+
 				// 控制请求当前页数
 				pageNo: 1,
 				// 控制当前页面显示数据条数
@@ -207,6 +221,16 @@ export default {
 			handler() {
 				this.reqSearchInfo();
 			}
+		}
+	},
+	computed:{
+		// 用于自动返回当前的排列的类型
+		orderType(){
+			return this.searchParams.order.split(':')[0]
+		},
+		// 用于自动返回当前的排序类名
+		iconName(){
+			return this.searchParams.order.split(':')[1]==="desc"?'icon-down':'icon-up'
 		}
 	},
 	methods: {
@@ -311,6 +335,35 @@ export default {
 			// console.log('Search的changePageNo',data)
 
 			this.searchParams.pageNo = data;
+		},
+		changeOrder(type){
+			/*
+				假设当前正处于综合排序激活状态
+					如果用户再次点击综合排序
+						意思是从升序变为降序,或者从降序变为升序
+
+					如果用户点击的是价格排序
+						意思是将使用价格进行排序,默认是降序
+			*/
+			//	如果当前已经在综合,本次点击又是综合
+			// 	如果当前已经在价格,本次点击又是价格
+			// 那么应该将升序/降序的规则进行取反
+			if(this.orderType==type){
+				const result = this.searchParams.order.split(':')[1]==="desc"?'asc':'desc';
+				this.searchParams.order = `${type}:${result}`;
+			}else{
+				this.searchParams.order = `${type}:desc`;
+			}
+		},
+		toDetail(good){
+			// console.log(good)
+			// this.$router.push({
+			// 	path:"/detail",
+			// 	query:{
+			// 		goodId:good.id
+			// 	}
+			// })
+			this.$router.push(`/detail/${good.id}`)
 		}
 	},
 	components: {
