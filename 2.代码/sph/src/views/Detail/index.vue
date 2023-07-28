@@ -368,13 +368,28 @@
     
         数据响应式(数据劫持):
           其实就是将data返回的所有属性进行数据劫持,变成响应式属性
+
+        created和mounted都可以发送请求,那么区别呢?
+        回答:
+          1.速度方面,created早于mounted执行
+            请求是越早出去越早回来,所以其实在工作中很多人都会在created发请求
+            因为js引擎是单线程解析代码的,所以created执行时机比mounted更早
+
+          2.mounted比created更稳
+            因为mounted钩子函数执行的时候,所有的操作都已经结束了,节点也已经挂载结束
+              所以没有什么是这个时候不能做
+
+            而created内部不能操作真实DOM,因为还没有挂载
+
+          注意:千万不要在created中做大量的逻辑操作,因为js引擎会单线程解析代码
+              如果在created阻塞10秒,后续页面的挂载也会慢10秒
+          
     */
     created(){
       this.$API.detail.reqDetailInfo(this.$route.params.id);
     },
-    // mounted(){
-
-    // },
+    mounted(){
+    },
     
     components: {
       ImageList,

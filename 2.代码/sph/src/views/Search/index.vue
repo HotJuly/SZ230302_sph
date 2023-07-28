@@ -39,33 +39,20 @@
 					<div class="sui-navbar">
 						<div class="navbar-inner filter">
 							<ul class="sui-nav">
-								<li 
-								:class="{
-									active:orderType==='1'
-								}"
-								@click="changeOrder(1)"
-								>
+								<li :class="{
+									active: orderType === '1'
+								}" @click="changeOrder(1)">
 									<a>
 										综合
-										<i 
-										v-show="orderType==='1'" 
-										class="iconfont"
-										:class="iconName"
-										></i>
+										<i v-show="orderType === '1'" class="iconfont" :class="iconName"></i>
 									</a>
 								</li>
-								<li 
-								:class="{
-									active:orderType==='2'
-								}"
-								@click="changeOrder(2)"
-								>
+								<li :class="{
+									active: orderType === '2'
+								}" @click="changeOrder(2)">
 									<a>
 										价格
-										<i v-show="orderType==='2'" 
-										class="iconfont"
-										:class="iconName"
-										></i>
+										<i v-show="orderType === '2'" class="iconfont" :class="iconName"></i>
 									</a>
 								</li>
 							</ul>
@@ -102,6 +89,13 @@
 							</li>
 						</ul>
 					</div>
+
+					<!-- 数据为空的展示 -->
+					<div v-show="!total" class="empty">
+						<img src="https://static.360buyimg.com/devfe/error-new/1.0.0/css/i/error_06.png" alt="">
+						<h1>抱歉，搜索结果为空！</h1>
+					</div>
+
 					<!-- 分页器 -->
 					<!-- <Pagination 
 					:total="total" 
@@ -110,12 +104,7 @@
 					:continues="5"
 					@changePageNo="changePageNo"
 					/> -->
-					<Pagination 
-					:total="total" 
-					:totalPages="totalPages"
-					:pageNo.sync="searchParams.pageNo"
-					:continues="5"
-					/>
+					<Pagination :total="total" :totalPages="totalPages" :pageNo.sync="searchParams.pageNo" :continues="5" />
 				</div>
 			</div>
 		</div>
@@ -159,7 +148,7 @@ export default {
 				trademark: "",
 
 				// 用于存储当前商品的排序规则
-				order:"1:desc",
+				order: "1:desc",
 
 				// 控制请求当前页数
 				pageNo: 1,
@@ -223,14 +212,14 @@ export default {
 			}
 		}
 	},
-	computed:{
+	computed: {
 		// 用于自动返回当前的排列的类型
-		orderType(){
+		orderType() {
 			return this.searchParams.order.split(':')[0]
 		},
 		// 用于自动返回当前的排序类名
-		iconName(){
-			return this.searchParams.order.split(':')[1]==="desc"?'icon-down':'icon-up'
+		iconName() {
+			return this.searchParams.order.split(':')[1] === "desc" ? 'icon-down' : 'icon-up'
 		}
 	},
 	methods: {
@@ -300,7 +289,7 @@ export default {
 			this.total = total;
 
 			this.totalPages = totalPages;
-			
+
 		},
 		saveTrademark(tm) {
 			this.searchParams.trademark = `${tm.tmId}:${tm.tmName}`
@@ -331,12 +320,12 @@ export default {
 			this.searchParams.props.push(str);
 			this.searchParams.pageNo = 1;
 		},
-		changePageNo(data){
+		changePageNo(data) {
 			// console.log('Search的changePageNo',data)
 
 			this.searchParams.pageNo = data;
 		},
-		changeOrder(type){
+		changeOrder(type) {
 			/*
 				假设当前正处于综合排序激活状态
 					如果用户再次点击综合排序
@@ -348,14 +337,14 @@ export default {
 			//	如果当前已经在综合,本次点击又是综合
 			// 	如果当前已经在价格,本次点击又是价格
 			// 那么应该将升序/降序的规则进行取反
-			if(this.orderType==type){
-				const result = this.searchParams.order.split(':')[1]==="desc"?'asc':'desc';
+			if (this.orderType == type) {
+				const result = this.searchParams.order.split(':')[1] === "desc" ? 'asc' : 'desc';
 				this.searchParams.order = `${type}:${result}`;
-			}else{
+			} else {
 				this.searchParams.order = `${type}:desc`;
 			}
 		},
-		toDetail(good){
+		toDetail(good) {
 			// console.log(good)
 			// this.$router.push({
 			// 	path:"/detail",
