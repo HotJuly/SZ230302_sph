@@ -224,7 +224,9 @@ export default {
 					...this.$route.query,
 					keyword: undefined
 				}
-			})
+			});
+
+			this.searchParams.pageNo = 1;
 		},
 		removeCategory() {
 			// this.searchParams.categoryName=undefined;
@@ -243,9 +245,11 @@ export default {
 				}
 			});
 
+			this.searchParams.pageNo = 1;
 		},
 		removeTrademark() {
 			this.searchParams.trademark = '';
+			this.searchParams.pageNo = 1;
 		},
 		removeAttr(index) {
 			// console.log(1)
@@ -256,6 +260,7 @@ export default {
 			// 重写:它具有原先的效果,同时还增加了响应式的效果
 			// this.searchParams.props[index]=undefined;
 			this.searchParams.props.splice(index, 1);
+			this.searchParams.pageNo = 1;
 		},
 		async reqSearchInfo() {
 			const { goodsList, trademarkList, attrsList, total, totalPages } = await this.$API.search.reqList(this.searchParams);
@@ -271,9 +276,11 @@ export default {
 			this.total = total;
 
 			this.totalPages = totalPages;
+			
 		},
 		saveTrademark(tm) {
 			this.searchParams.trademark = `${tm.tmId}:${tm.tmName}`
+			this.searchParams.pageNo = 1;
 		},
 		saveAttr(attr, attrValue) {
 			// console.log('Search',attr,attrValue)
@@ -298,6 +305,7 @@ export default {
 			if (result) return;
 
 			this.searchParams.props.push(str);
+			this.searchParams.pageNo = 1;
 		},
 		changePageNo(data){
 			// console.log('Search的changePageNo',data)
