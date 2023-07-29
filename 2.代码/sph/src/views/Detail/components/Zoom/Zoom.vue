@@ -7,8 +7,8 @@
     </div>
     <div class="mask"></div> -->
 
-    <vue-photo-zoom-pro :high-url="skuDefaultImg">
-      <img :src="skuDefaultImg" style="height:200px" />
+    <vue-photo-zoom-pro :high-url="skuDefaultImg" :out-zoomer="true" :width="200" :height="200">
+      <img :src="skuDefaultImg" style="width:400px;height:400px;" />
     </vue-photo-zoom-pro>
   </div>
 </template>
@@ -37,50 +37,18 @@ export default {
     height: 100%;
   }
 
-  .event {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 998;
+  .zoomer {
+    z-index: 9;
   }
 
-  .mask {
-    width: 50%;
-    height: 50%;
-    background-color: rgba(0, 255, 0, 0.3);
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: none;
+  .selector {
+    background-color: rgba(255, 0, 0, 0.327);
   }
+}
 
-  .big {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: -1px;
-    left: 100%;
-    border: 1px solid #aaa;
-    overflow: hidden;
-    z-index: 998;
-    display: none;
-    background: white;
-
-    img {
-      width: 200%;
-      max-width: 200%;
-      height: 200%;
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-  }
-
-  .event:hover~.mask,
-  .event:hover~.big {
-    display: block;
-  }
+.zoomer {
+  z-index: 5;
+  top: 0 !important;
+  left: 10px !important;
 }
 </style>

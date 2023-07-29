@@ -1,20 +1,41 @@
 <template>
-  <div class="swiper-container">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <img src="../../images/s1.png">
-      </div>
-    </div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-  </div>
+  <swiper class="swiper-container" :options="swiperOptions">
+    
+    <swiper-slide 
+    v-for="image in imageList"
+    :key="image.id" 
+    class="swiper-slide">
+      <img :src="image.imgUrl">
+    </swiper-slide>
+
+
+    <div class="swiper-button-next" slot="button-next"></div>
+    <div class="swiper-button-prev" slot="button-prev"></div>
+  </swiper>
 </template>
 
 <script>
-
-  import Swiper from 'swiper'
+import {Swiper,SwiperSlide} from 'vue-awesome-swiper';
+import 'swiper/css/swiper.css';
   export default {
     name: "ImageList",
+    props:["imageList"],
+    data(){
+      return{
+        swiperOptions:{
+          slidesPerView:"auto",
+          spaceBetween:10,
+          navigation:{
+            nextEl:".swiper-button-next",
+            prevEl:".swiper-button-prev"
+          }
+        }
+      }
+    },
+    components:{
+      Swiper,
+      SwiperSlide
+    }
   }
 </script>
 

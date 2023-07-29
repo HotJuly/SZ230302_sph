@@ -19,7 +19,7 @@
           <!--放大镜效果-->
           <Zoom :skuDefaultImg="skuInfo.skuDefaultImg"/>
           <!-- 小图列表 -->
-          <ImageList />
+          <ImageList :imageList="skuInfo.skuImageList"/>
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
