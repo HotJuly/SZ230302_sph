@@ -77,7 +77,12 @@ export default new VueRouter({
 
     if(savedPosition){
         // 这个数据有值,说明返回旧路由了,那么就直接调到之前的位置即可
-        return savedPosition
+        return savedPosition;
+        // return new Promise((resolve)=>{
+        //   setTimeout(()=>{
+        //     resolve(savedPosition)
+        //   },800);
+        // })
     }else{
         // 能进入这里,说明savedPosition没有值,说明是进入新的路由了,直接让他回到顶点
         return{

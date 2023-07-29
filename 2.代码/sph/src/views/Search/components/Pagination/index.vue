@@ -49,6 +49,7 @@
         >{{ index + startEnd.start }}
         </button>
 
+
         <!-- 如果当前v-for的结束按钮,与最后一页的按钮之间具有间隔,就显示... -->
         <span v-show="totalPages - startEnd.end>=2">···</span>
 
@@ -140,16 +141,15 @@ export default {
                 }
             }
 
-
             return {
                 start,
                 end
             }
-        }
+        },
     },
-    methods:{
-        changePageNo(currentPageNo){
-            this.$emit('update:pageNo',currentPageNo)
+    methods: {
+        changePageNo(currentPageNo) {
+            this.$emit('update:pageNo', currentPageNo)
         }
     }
 };

@@ -44,6 +44,8 @@
 								}" @click="changeOrder(1)">
 									<a>
 										综合
+										<!-- 如果当前用户选择的是综合,那么就应该展示综合的字体图标 -->
+										<!-- 反之,如果选择的是价格排序,那么综合的图标就不进行显示 -->
 										<i v-show="orderType === '1'" class="iconfont" :class="iconName"></i>
 									</a>
 								</li>
@@ -104,7 +106,10 @@
 					:continues="5"
 					@changePageNo="changePageNo"
 					/> -->
-					<Pagination :total="total" :totalPages="totalPages" :pageNo.sync="searchParams.pageNo" :continues="5" />
+					<Pagination 
+					:total="total" 
+					:totalPages="totalPages" 
+					:pageNo.sync="searchParams.pageNo" :continues="5" />
 				</div>
 			</div>
 		</div>
@@ -148,6 +153,7 @@ export default {
 				trademark: "",
 
 				// 用于存储当前商品的排序规则
+				// 默认当前商品排序规则为	综合降序
 				order: "1:desc",
 
 				// 控制请求当前页数
@@ -219,6 +225,8 @@ export default {
 		},
 		// 用于自动返回当前的排序类名
 		iconName() {
+			// 如果当前用户排序规则是降序排序,那么就返回icon-down类名
+			// 反之,如果是升序,就返回icon-up类名
 			return this.searchParams.order.split(':')[1] === "desc" ? 'icon-down' : 'icon-up'
 		}
 	},
@@ -337,10 +345,14 @@ export default {
 			//	如果当前已经在综合,本次点击又是综合
 			// 	如果当前已经在价格,本次点击又是价格
 			// 那么应该将升序/降序的规则进行取反
+			// this.orderType其实存储的就是目前的排序选项
+			// type代表当前用户,点击的是哪一个排序的按钮,也代表着用户想要改成哪种排序
 			if (this.orderType == type) {
+				// 用户点击的排序,就是现在正在实施排序,例如在综合又点综合,或者在价格又点价格
 				const result = this.searchParams.order.split(':')[1] === "desc" ? 'asc' : 'desc';
 				this.searchParams.order = `${type}:${result}`;
 			} else {
+				// 能进入这里,就说明用户点的和正在实施排序不同,例如在综合点了价格,或者在价格点了综合
 				this.searchParams.order = `${type}:desc`;
 			}
 		},
@@ -365,6 +377,7 @@ export default {
 <style lang="less" scoped>
 .main {
 	margin: 10px 0;
+	// min-height:1500px;
 
 	.py-container {
 		width: 1200px;
