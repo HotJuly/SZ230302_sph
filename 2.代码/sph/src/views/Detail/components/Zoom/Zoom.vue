@@ -7,8 +7,8 @@
     </div>
     <div class="mask"></div> -->
 
-    <vue-photo-zoom-pro :high-url="skuDefaultImg" :out-zoomer="true" :width="200" :height="200">
-      <img :src="skuDefaultImg" style="width:400px;height:400px;" />
+    <vue-photo-zoom-pro :high-url="newImgUrl||skuDefaultImg" :out-zoomer="true" :width="200" :height="200">
+      <img :src="newImgUrl||skuDefaultImg" style="width:400px;height:400px;" />
     </vue-photo-zoom-pro>
   </div>
 </template>
@@ -18,9 +18,20 @@ import VuePhotoZoomPro from 'vue-photo-zoom-pro'
 import 'vue-photo-zoom-pro/dist/style/vue-photo-zoom-pro.css'
 export default {
   name: "Zoom",
+  data(){
+    return{
+      newImgUrl:""
+    }
+  },
   props: ['skuDefaultImg'],
   components: {
     VuePhotoZoomPro
+  },
+  mounted(){
+    this.$bus.$on('sendImgUrl',(imgUrl)=>{
+      // console.log('sendImgUrl',imgUrl)
+      this.newImgUrl = imgUrl;
+    })
   }
 }
 </script>
