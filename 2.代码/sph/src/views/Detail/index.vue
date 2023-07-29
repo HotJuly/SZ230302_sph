@@ -66,6 +66,7 @@
         </div>
       </div>
     </section>
+
   </div>
 </template>
 
@@ -126,11 +127,11 @@
       this.categoryView = categoryView;
       this.skuInfo = skuInfo;
       this.spuSaleAttrList = spuSaleAttrList;
+
       // console.log(this.categoryView)
     },
     mounted(){
     },
-    
     components: {
       ImageList,
       Zoom
