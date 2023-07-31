@@ -1,7 +1,7 @@
 <template>
   <div class="cart-complete-wrap">
     <div class="cart-complete">
-      <h3><i class="sui-icon icon-pc-right"></i>商品已成功加入购物车！</h3>
+      <h3><i class="sui-icon iconfont icon-success"></i>商品已成功加入购物车！</h3>
       <div class="goods">
         <div class="left-good">
           <div class="left-pic">
@@ -14,8 +14,8 @@
             v-for="attrValue in skuInfo.skuSaleAttrValueList"
             :key="attrValue.id"
             >{{attrValue.saleAttrName}}：{{attrValue.saleAttrValueName}}</p>
-            <p class="attr">价格：{{skuInfo.price}}</p>
             <p class="attr">数量：{{skuInfo.goodNum}}</p>
+            <p class="attr">价格：{{skuInfo.price}}</p>
           </div>
         </div>
         <div class="right-gocart">
@@ -81,11 +81,11 @@
 
           .left-pic {
             border: 1px solid #dfdfdf;
-            width: 60px;
+            width: 100px;
             float: left;
             img {
-              width: 60px;
-              height: 60px;
+              width: 100px;
+              height: 100px;
             }
           }
 

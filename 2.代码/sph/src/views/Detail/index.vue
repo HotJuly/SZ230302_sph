@@ -268,7 +268,7 @@ export default {
 
       this.skuIds = JSON.parse(valuesSkuJson);
     },
-    addCart(){
+    async addCart(){
       /*
         1.收集需要传递的相关数据
           -当前商品的默认图片
@@ -279,6 +279,8 @@ export default {
         2.放入sessionStorage中进行存储
         3.在addsuccess界面获取,展示
       */
+
+      await this.$API.detail.reqAddCart(this.id,this.goodNum);
 
       const {skuDefaultImg,skuName,price,skuSaleAttrValueList} = this.skuInfo;
       const goodNum = this.goodNum;

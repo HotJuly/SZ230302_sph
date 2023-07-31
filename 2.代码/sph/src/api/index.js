@@ -8,4 +8,5 @@ export { default as home } from './modules/home';
 export { default as search } from './modules/search';
 export { default as detail } from './modules/detail';
 export { default as test } from './modules/test';
+export { default as cart } from './modules/cart';
 
