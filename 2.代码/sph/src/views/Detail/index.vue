@@ -53,7 +53,7 @@
                 <a @click="changeGoodNum('sub')" href="javascript:" class="mins">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a href="javascript:" @click="addCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -267,6 +267,9 @@ export default {
       this.spuSaleAttrList = spuSaleAttrList;
 
       this.skuIds = JSON.parse(valuesSkuJson);
+    },
+    addCart(){
+      this.$router.push('/addsuccess')
     }
   },
   components: {

@@ -9,6 +9,7 @@ import Login from "@/views/Login";
 import Search from "@/views/Search";
 import Register from "@/views/Register";
 import Detail from "@/views/Detail";
+import AddCartSuccess from "@/views/AddCartSuccess";
 import Test from "@/views/Test";
 
 Vue.use(VueRouter);
@@ -27,6 +28,13 @@ export default new VueRouter({
     {
       path: "/cart",
       component: Cart,
+      meta: {
+        isShowFooter: true,
+      },
+    },
+    {
+      path: "/addsuccess",
+      component: AddCartSuccess,
       meta: {
         isShowFooter: true,
       },
