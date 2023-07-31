@@ -39,7 +39,14 @@
               <div class="choosed"></div>
               <dl v-for="saleAttr in spuSaleAttrList" :key="saleAttr.id">
                 <dt class="title">选择{{ saleAttr.saleAttrName }}</dt>
-                <dd class="active" v-for="attrValue in saleAttr.spuSaleAttrValueList" :key="attrValue.id">
+                <dd 
+                :class="{
+                  active:attrValue.isChecked==='1'
+                }" 
+                v-for="attrValue in saleAttr.spuSaleAttrValueList" 
+                @click="checkAttrValue(saleAttr,attrValue)"
+                :key="attrValue.id"
+                >
                   {{ attrValue.saleAttrValueName }}</dd>
               </dl>
             </div>
@@ -165,7 +172,7 @@ export default {
         if(goodNumReg.test(result)){
           this.goodNum = result;
         }else if(result>200){
-          this.goodNum = event.target.value = 200;
+          this.goodNum = 200;
           // 上述代码等同于以下两行
 
           // 该行代码的目的,是为了防止Vue没有更新页面,所以我们自己主动更新
@@ -174,10 +181,37 @@ export default {
           // 该行代码的目的,是为了更新Vue的响应式属性,让他帮我们更新页面,但是有可能会不更新页面
           // 因为,如果上次的数据与本次赋值的相同,那么本次就不会更新页面
           // this.goodNum = event.target.value;
+          /*
+            Object.defineProperty(data,"goodNum",{
+              get(){},
+              set(newVal){
+                if(newVal===val){
+                  return;
+                }
+
+                val = newVal;
+
+                dep.notify();
+              }
+            })
+          
+          
+          */
         }else{
           this.goodNum = event.target.value  = 1;
         }
       }
+    },
+    checkAttrValue(saleAttr,attrValue){
+      // console.log(attrValue)
+      // /此处实现排他效果,也就是先将当前分类,所有的选项都变为未选中状态,再将点击的改为选中
+
+      saleAttr.spuSaleAttrValueList.forEach((saleAttrValue)=>{
+        saleAttrValue.isChecked = '0';
+      })
+      // 只要用户点击触发该回调函数,就说明用户想要选中该属性
+      attrValue.isChecked = '1';
+
     }
   },
   components: {

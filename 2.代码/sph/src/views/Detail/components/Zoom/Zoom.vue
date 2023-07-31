@@ -30,9 +30,13 @@ export default {
   mounted() {
     this.$bus.$on('sendImgUrl', (imgUrl) => {
       // console.log('sendImgUrl',imgUrl)
+      console.log(1)
       this.newImgUrl = imgUrl;
     })
   },
+  beforeDestroy(){
+    this.$bus.$off("sendImgUrl");
+  }
 }
 </script>
 
