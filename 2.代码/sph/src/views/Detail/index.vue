@@ -39,20 +39,16 @@
               <div class="choosed"></div>
               <dl v-for="saleAttr in spuSaleAttrList" :key="saleAttr.id">
                 <dt class="title">选择{{ saleAttr.saleAttrName }}</dt>
-                <dd 
-                :class="{
-                  active:attrValue.isChecked==='1'
-                }" 
-                v-for="attrValue in saleAttr.spuSaleAttrValueList" 
-                @click="checkAttrValue(saleAttr,attrValue)"
-                :key="attrValue.id"
-                >
+                <dd :class="{
+                  active: attrValue.isChecked === '1'
+                }" v-for="attrValue in saleAttr.spuSaleAttrValueList" @click="checkAttrValue(saleAttr, attrValue)"
+                  :key="attrValue.id">
                   {{ attrValue.saleAttrValueName }}</dd>
               </dl>
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input :value="goodNum" @change="changeGoodNum('input',$event)" autocomplete="off" class="itxt">
+                <input :value="goodNum" @change="changeGoodNum('input', $event)" autocomplete="off" class="itxt">
                 <a @click="changeGoodNum('add')" href="javascript:" class="plus">+</a>
                 <a @click="changeGoodNum('sub')" href="javascript:" class="mins">-</a>
               </div>
@@ -71,7 +67,7 @@
 <script>
 import ImageList from './components/ImageList/ImageList'
 import Zoom from './components/Zoom/Zoom'
-import {goodNumReg} from '@/utils/reg';
+import { goodNumReg } from '@/utils/reg';
 
 export default {
   name: 'Detail',
@@ -120,11 +116,11 @@ export default {
       spuSaleAttrList: [],
 
       // 用于存储当前这个商品所有的细化商品id
-      skuIds:{},
+      skuIds: {},
 
       goodNum: 1,
 
-      id:null
+      id: null
     }
   },
   async created() {
@@ -137,7 +133,7 @@ export default {
   mounted() {
   },
   methods: {
-    changeGoodNum(type,event) {
+    changeGoodNum(type, event) {
       /*
         目前想要触发这个回调函数,有三种手段
           1.通过input框修改触发
@@ -147,15 +143,15 @@ export default {
       */
       if (type === "add") {
         // 200是我们开发者设定的默认库存
-        if(this.goodNum<200){
+        if (this.goodNum < 200) {
           this.goodNum += 1;
         }
       } else if (type === "sub") {
 
-        if(this.goodNum>1){
+        if (this.goodNum > 1) {
           this.goodNum -= 1;
         }
-        
+
       } else {
         // 能进入这里,说明用户是通过输入框触发的事件
         // 那么就需要获取到输入框中的内容,然后进行赋值操作
@@ -170,11 +166,11 @@ export default {
             1.Vue更新数据是同步的,而且如果多次更新的数据相同,页面不会渲染多次
         */
 
-        
-        const result = event.target.value *1;
-        if(goodNumReg.test(result)){
+
+        const result = event.target.value * 1;
+        if (goodNumReg.test(result)) {
           this.goodNum = result;
-        }else if(result>200){
+        } else if (result > 200) {
           this.goodNum = 200;
           // 上述代码等同于以下两行
 
@@ -200,17 +196,17 @@ export default {
           
           
           */
-        }else{
-          this.goodNum = event.target.value  = 1;
+        } else {
+          this.goodNum = event.target.value = 1;
         }
       }
     },
-    checkAttrValue(saleAttr,attrValue){
+    checkAttrValue(saleAttr, attrValue) {
       // console.log(attrValue)
       // /此处实现排他效果,也就是先将当前分类,所有的选项都变为未选中状态,再将点击的改为选中
       let oldSelected;
-      saleAttr.spuSaleAttrValueList.forEach((saleAttrValue)=>{
-        if(saleAttrValue.isChecked==='1'){
+      saleAttr.spuSaleAttrValueList.forEach((saleAttrValue) => {
+        if (saleAttrValue.isChecked === '1') {
           oldSelected = saleAttrValue;
         }
         saleAttrValue.isChecked = '0';
@@ -225,8 +221,8 @@ export default {
           数组的长度与原先的数组长度相同
             原来有两个销售属性的大类,而我们想要的是两个选中的销售属性的值
       */
-      const result = this.spuSaleAttrList.map((saleAttr)=>{
-        const checkedValue = saleAttr.spuSaleAttrValueList.find((value)=>{
+      const result = this.spuSaleAttrList.map((saleAttr) => {
+        const checkedValue = saleAttr.spuSaleAttrValueList.find((value) => {
           return value.isChecked === '1'
         })
         return checkedValue;
@@ -236,21 +232,20 @@ export default {
         通过遍历得到的已选中属性对象组成的数组,得到他们id累加的属性名
         返回值:id组成的属性名
         返回值数据类型:string
-      
-      */ 
-      let key = result.reduce((pre,item)=>{
+      */
+      let key = result.reduce((pre, item) => {
         // 通过return来返回本次处理完的数据,给下次执行回调函数使用
         const id = item.id;
         // console.log(id)
         return pre + "|" + id;
-      },"")
+      }, "")
       key = key.substring(1);
 
       const newGoodId = this.skuIds[key];
       // console.log(newGoodId)
 
 
-      if(!newGoodId){
+      if (!newGoodId) {
         alert(`您选购的商品,暂时没有库存,请挑选其他的商品`);
         // 此处就是将用户新选得属性改为未选中,将之前的选中的重新改为选中状态
         attrValue.isChecked = "0";
@@ -263,9 +258,9 @@ export default {
 
       this.reqSkuInfo();
     },
-    async reqSkuInfo(){
-      
-      const { categoryView: categoryView, skuInfo, spuSaleAttrList,valuesSkuJson } = await this.$API.detail.reqDetailInfo(this.id);
+    async reqSkuInfo() {
+
+      const { categoryView: categoryView, skuInfo, spuSaleAttrList, valuesSkuJson } = await this.$API.detail.reqDetailInfo(this.id);
       // console.log(result)
       this.categoryView = categoryView;
       this.skuInfo = skuInfo;
