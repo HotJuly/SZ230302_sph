@@ -269,7 +269,31 @@ export default {
       this.skuIds = JSON.parse(valuesSkuJson);
     },
     addCart(){
-      this.$router.push('/addsuccess')
+      /*
+        1.收集需要传递的相关数据
+          -当前商品的默认图片
+          -商品名称
+          -价格
+          -数量
+          -用户选中的属性
+        2.放入sessionStorage中进行存储
+        3.在addsuccess界面获取,展示
+      */
+
+      const {skuDefaultImg,skuName,price,skuSaleAttrValueList} = this.skuInfo;
+      const goodNum = this.goodNum;
+
+      const sku = {
+        skuDefaultImg,
+        skuName,
+        price,
+        skuSaleAttrValueList,
+        goodNum
+      };
+
+      sessionStorage.setItem('sku',JSON.stringify(sku));
+
+      this.$router.push('/addsuccess');
     }
   },
   components: {

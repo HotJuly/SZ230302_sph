@@ -5,16 +5,22 @@
       <div class="goods">
         <div class="left-good">
           <div class="left-pic">
-            <img src="good.skuDefaultImg">
+            <img :src="skuInfo.skuDefaultImg">
           </div>
           <div class="right-info">
-            <p class="title">小米红米 Redmi note8 手机 梦幻蓝 全网通(4GB+64GB)</p>
-            <p class="attr">颜色：WFZ5099IH/5L钛金釜内胆 数量：2</p>
+            <p class="title">{{skuInfo.skuName}}</p>
+            <p 
+            class="attr" 
+            v-for="attrValue in skuInfo.skuSaleAttrValueList"
+            :key="attrValue.id"
+            >{{attrValue.saleAttrName}}：{{attrValue.saleAttrValueName}}</p>
+            <p class="attr">价格：{{skuInfo.price}}</p>
+            <p class="attr">数量：{{skuInfo.goodNum}}</p>
           </div>
         </div>
         <div class="right-gocart">
-          <a href="javascript:" class="sui-btn btn-xlarge">查看商品详情</a>
-          <a href="javascript:" >去购物车结算 > </a>
+          <a href="javascript:" class="sui-btn btn-xlarge" @click="goBack">查看商品详情</a>
+          <a href="javascript:" @click="toCart">去购物车结算 > </a>
         </div>
       </div>
     </div>
@@ -24,6 +30,20 @@
 <script>
   export default {
     name: 'AddCartSuccess',
+    data(){
+      return{
+        skuInfo:JSON.parse(sessionStorage.getItem('sku'))
+      }
+    },
+    methods:{
+      goBack(){
+        // this.$router.go(-1);
+        this.$router.back();
+      },
+      toCart(){
+        this.$router.replace('/cart');
+      }
+    }
   }
 </script>
 

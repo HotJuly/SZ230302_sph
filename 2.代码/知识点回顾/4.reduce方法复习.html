@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var arr = [{id:2},{id:3},{id:4}];
+        /*
+            reduce方法
+                接收参数个数:1-2个
+                    第一个实参必须是一个函数
+                        该函数一共传入4个参数(是reduce方法自动传给回调函数的)
+                            1.pre
+                                代表上一个数据是什么
+                                    如果没有上一个,就是初始数据
+                                    如果有上一个,那么上一个的数据其实就是上次执行回调函数的时候,return的结果
+
+                            2.item
+                                代表遍历数组得到的当前选项是什么
+                                    arr[0],arr[1]
+                            
+                            3.index
+                                代表当前遍历得到的数据的下标(相当于个数-1)
+                                    也就是当前遍历到第几个了
+
+                            4.arr
+                                代表当前遍历的数组
+
+                    第二个实参是代表初始数据(可选)
+
+                返回数据:最后一次执行回调函数的return结果
+
+            注意:
+                1.回调函数的执行次数与传入的参数个数有关
+                    如果只给reduce传入1个参数,那么回调函数的执行次数与数组长度的关系是-1操作
+                        例如:数组具有5个内容,那么执行次数就为4次
+
+                            由于没有传入初始数据,那么reduce会自动将数组的第一个数据作为初始数据使用
+                    
+                    如果给reduce传入2个参数,那么回调函数的执行次数与数组长度相同
+                        例如:数组具有5个内容,那么执行次数就为5次
+        
+        */
+        const result = arr.reduce((pre,item,index,a)=>{
+            // console.log(pre,item);
+
+            // 第一次执行:"|2"
+            // 第二次执行:"|2|3"
+            return pre + '|' + item.id
+        },'')
+
+        // const result = arr.reduce((pre,item,index,a)=>{
+        //     // 第一次执行 "2"+"|"+"3" ->返回结果为"2|3"
+        //     return pre.id + '|' + item.id
+        // })
+        console.log('result',result)
+    </script>
+</body>
+</html>
