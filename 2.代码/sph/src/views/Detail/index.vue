@@ -119,15 +119,18 @@ export default {
       // 用于存储当前商品可选的销售属性,通过不同的销售属性组合可以得到另外一个兄弟商品
       spuSaleAttrList: [],
 
-      goodNum: 1
+      // 用于存储当前这个商品所有的细化商品id
+      skuIds:{},
+
+      goodNum: 1,
+
+      id:null
     }
   },
   async created() {
-    const { categoryView: categoryView, skuInfo, spuSaleAttrList } = await this.$API.detail.reqDetailInfo(this.$route.params.id);
-    // console.log(result)
-    this.categoryView = categoryView;
-    this.skuInfo = skuInfo;
-    this.spuSaleAttrList = spuSaleAttrList;
+    this.id = this.$route.params.id;
+
+    this.reqSkuInfo();
 
     // console.log(this.categoryView)
   },
@@ -205,13 +208,70 @@ export default {
     checkAttrValue(saleAttr,attrValue){
       // console.log(attrValue)
       // /此处实现排他效果,也就是先将当前分类,所有的选项都变为未选中状态,再将点击的改为选中
-
+      let oldSelected;
       saleAttr.spuSaleAttrValueList.forEach((saleAttrValue)=>{
+        if(saleAttrValue.isChecked==='1'){
+          oldSelected = saleAttrValue;
+        }
         saleAttrValue.isChecked = '0';
       })
       // 只要用户点击触发该回调函数,就说明用户想要选中该属性
       attrValue.isChecked = '1';
 
+      /*
+        想要通过遍历所有的销售属性数组,来得到当前用户选中的所有的销售属性
+        返回值的意思:获取到所有已选中的销售属性对象组合而成的数组
+        返回值的数据类型:Array
+          数组的长度与原先的数组长度相同
+            原来有两个销售属性的大类,而我们想要的是两个选中的销售属性的值
+      */
+      const result = this.spuSaleAttrList.map((saleAttr)=>{
+        const checkedValue = saleAttr.spuSaleAttrValueList.find((value)=>{
+          return value.isChecked === '1'
+        })
+        return checkedValue;
+      });
+
+      /*
+        通过遍历得到的已选中属性对象组成的数组,得到他们id累加的属性名
+        返回值:id组成的属性名
+        返回值数据类型:string
+      
+      */ 
+      let key = result.reduce((pre,item)=>{
+        // 通过return来返回本次处理完的数据,给下次执行回调函数使用
+        const id = item.id;
+        // console.log(id)
+        return pre + "|" + id;
+      },"")
+      key = key.substring(1);
+
+      const newGoodId = this.skuIds[key];
+      // console.log(newGoodId)
+
+
+      if(!newGoodId){
+        alert(`您选购的商品,暂时没有库存,请挑选其他的商品`);
+        // 此处就是将用户新选得属性改为未选中,将之前的选中的重新改为选中状态
+        attrValue.isChecked = "0";
+        oldSelected.isChecked = '1';
+        return;
+      }
+
+      // 如果有该商品,就发送请求,没有就重置选择条件
+      this.id = newGoodId;
+
+      this.reqSkuInfo();
+    },
+    async reqSkuInfo(){
+      
+      const { categoryView: categoryView, skuInfo, spuSaleAttrList,valuesSkuJson } = await this.$API.detail.reqDetailInfo(this.id);
+      // console.log(result)
+      this.categoryView = categoryView;
+      this.skuInfo = skuInfo;
+      this.spuSaleAttrList = spuSaleAttrList;
+
+      this.skuIds = JSON.parse(valuesSkuJson);
     }
   },
   components: {
