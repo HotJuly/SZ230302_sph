@@ -1,7 +1,7 @@
 import axios from "axios";
 import nProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import { v4 as uuid} from 'uuid';
+import getTempId from "./getTempId";
 
 /* 
     此处会创建一个axios的实例对象,方便后续发送请求
@@ -29,7 +29,7 @@ request.interceptors.request.use(
         // 临时id需要通过库去进行生成,而且生成的乱码是唯一的,基本不会重复
         // 因为uuid是通过当前电脑的mac序列号,以及ip地址等数据,生成的乱码,
         // 所以如果不是同一台电脑,生成的uuid一定不重复
-        config.headers.userTempId = uuid();
+        config.headers.userTempId = getTempId();
 
         // 注意:一定要写return config;
         return config;
