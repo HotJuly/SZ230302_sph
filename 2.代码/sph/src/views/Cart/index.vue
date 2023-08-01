@@ -235,26 +235,29 @@ export default {
       };
 
 
-      // fns[type]&&fns[type]();
-
+      // 下面一行代码的意思等同于右边的代码fns[type]&&fns[type]();
       fns[type]?.();
 
       good.flag = true;
 
-      // a&&a.b&&a.b.c;
-      // a?.b?.c
-
+      // 多次执行修改数量操作的话,就关掉上次操作时候打开的定时器
       if (good.timer) {
         clearTimeout(good.timer);
       }
+
       good.timer = setTimeout(async () => {
-        // 使用最新值-初始值 
+        // 实际发送请求的修改数字 = 当前商品的最新值 - 当前商品的初始值 
         const changeNum = good.skuNum - good.initialNum;
 
+        // 如果修改的数字不为0,就发送请求
         if (changeNum) {
           // 该接口第二个参数,正数代表需要增加多少个,负数代表减少多少个
           await this.$API.detail.reqAddCart(good.sourceId, changeNum);
+
+          // 将开关打开,方便下次用户修改的时候,记录新的初始值
+          // 由于请求已经发送成功了,所以当前的初始值就应该是发送请求之后的数字
           good.flag = false;
+
           good.timer = null;
         }
       }, 2000);
