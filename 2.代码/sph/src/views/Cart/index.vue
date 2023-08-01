@@ -11,13 +11,9 @@
         <div class="cart-th6">操作</div>
       </div>
       <div class="cart-body">
-        <ul 
-        class="cart-list"
-        v-for="good in cartList"
-        :key="good.id"
-        >
+        <ul class="cart-list" v-for="good in cartList" :key="good.id">
           <li class="cart-list-con1">
-            <input :checked="good.isChecked" type="checkbox" name="chk_list">
+            <input :checked="good.isChecked" type="checkbox" name="chk_list" @change="changeCheck(good)">
           </li>
           <li class="cart-list-con2">
             <img :src="good.imgUrl">
@@ -32,7 +28,7 @@
             <a href="javascript:void(0)" class="plus">+</a>
           </li>
           <li class="cart-list-con6">
-            <span class="sum">{{ good.skuPrice * good.skuNum}}</span>
+            <span class="sum">{{ good.skuPrice * good.skuNum }}</span>
           </li>
           <li class="cart-list-con7">
             <a href="#none" class="sindelet">删除</a>
@@ -43,7 +39,8 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox">
+        <!-- <input :checked="isAllSelected" class="chooseAll" type="checkbox" @change="changeAllSelect"> -->
+        <input v-model="isAllSelected" class="chooseAll" type="checkbox">
         <span>全选</span>
       </div>
       <div class="option">
@@ -51,7 +48,8 @@
       </div>
       <div class="money-box">
         <div class="chosed">已选择
-          <span>0</span>件商品</div>
+          <span>0</span>件商品
+        </div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
           <i class="summoney">0</i>
@@ -65,19 +63,90 @@
 </template>
 
 <script>
-  export default {
-    name: 'ShopCart',
-    data(){
-      return {
-        cartList:[]
-      }
+export default {
+  name: 'ShopCart',
+  data() {
+    return {
+      cartList: []
+    }
+  },
+  async created() {
+    const result = await this.$API.cart.reqCartList();
+    // console.log(result)
+    this.cartList = result[0].cartInfoList;
+  },
+  methods: {
+    changeCheck(good) {
+
+      // 1.用于控制当前页面的展示效果,让用户可以观察到自己做的操作效果
+      good.isChecked = Number(!good.isChecked)
+      // good.isChecked = good.isChecked?0:1;
+
+      // 注意,购物车中用到的商品id,全是sourceId
+      // 2.用于发送请求,控制服务器的数据进行选中状态的变更
+      this.$API.cart.reqChangeCheck(good.sourceId, good.isChecked);
     },
-    async created(){
-      const result = await this.$API.cart.reqCartList();
-      // console.log(result)
-      this.cartList = result[0].cartInfoList;
+    changeAllSelect() {
+      const flag = Number(!this.isAllSelected);
+      // console.log(flag)
+
+      // 1.用于将购物车中所有的商品改变选中状态,但是只是前端内存中的操作,并没有影响到服务器
+      const idList = this.cartList.map((good) => {
+        good.isChecked = flag;
+        return good.sourceId;
+      })
+
+      //2.发送请求告知服务器,本次所有商品的改变状态
+      this.$API.cart.reqChangeAllSelected(flag, idList)
+    }
+  },
+  computed: {
+    // isAllSelected(){
+    //   /*
+    //     需求:
+    //       1.如果当前购物车中所有商品都是选中状态,那么全选按钮就是选中状态
+    //       2.如果购物车中有至少一个商品是未选中状态,那么全选按钮就是未选中状态
+    //       3.如果购物车中没有商品,那么全选按钮就是未选中状态
+
+    //     返回值:布尔值
+    //       由于全选按钮只有两种情况,所以布尔值类型的数据是最好使用的
+    //   */
+    //  if(!this.cartList.length)return false;
+    //  const result = this.cartList.every((good)=>{
+    //   return good.isChecked
+    //  })
+
+    //  return result;
+    // },
+    isAllSelected: {
+      get() {
+        // 如果代码想要读取当前计算属性的结果,就会执行get方法
+        // 例如:在模版中展示该数据,在js中,this.isAllSelected使用也算读取
+
+        if (!this.cartList.length) return false;
+        const result = this.cartList.every((good) => {
+          return good.isChecked
+        })
+
+        return result;
+      },
+      set(newVal) {
+        // 如果代码中对当前计算属性进行赋值操作,就会执行set方法
+        // const flag = Number(!this.isAllSelected);
+
+        const flag =  Number(newVal);
+        // 1.用于将购物车中所有的商品改变选中状态,但是只是前端内存中的操作,并没有影响到服务器
+        const idList = this.cartList.map((good) => {
+          good.isChecked = flag;
+          return good.sourceId;
+        })
+
+        //2.发送请求告知服务器,本次所有商品的改变状态
+        this.$API.cart.reqChangeAllSelected(flag, idList)
+      }
     }
   }
+}
 
 </script>
 
@@ -85,32 +154,40 @@
 .cart {
   width: 1200px;
   margin: 0 auto;
+
   h4 {
     margin: 9px 0;
     font-size: 14px;
     line-height: 21px;
   }
+
   .cart-main {
     .cart-th {
       background: #f5f5f5;
       border: 1px solid #ddd;
       padding: 10px;
       overflow: hidden;
-      & > div {
+
+      &>div {
         float: left;
       }
+
       .cart-th1 {
         width: 25%;
+
         input {
           vertical-align: middle;
         }
+
         span {
           vertical-align: middle;
         }
       }
+
       .cart-th2 {
         width: 25%;
       }
+
       .cart-th3,
       .cart-th4,
       .cart-th5,
@@ -118,26 +195,33 @@
         width: 12.5%;
       }
     }
+
     .cart-body {
       margin: 15px 0;
       border: 1px solid #ddd;
+
       .cart-list {
         padding: 10px;
         border-bottom: 1px solid #ddd;
         overflow: hidden;
-        & > li {
+
+        &>li {
           float: left;
         }
+
         .cart-list-con1 {
           width: 15%;
         }
+
         .cart-list-con2 {
           width: 35%;
+
           img {
             width: 82px;
             height: 82px;
             float: left;
           }
+
           .item-msg {
             float: left;
             width: 150px;
@@ -145,11 +229,14 @@
             line-height: 18px;
           }
         }
+
         .cart-list-con4 {
           width: 10%;
         }
+
         .cart-list-con5 {
           width: 17%;
+
           .mins {
             border: 1px solid #ddd;
             border-right: 0;
@@ -158,8 +245,9 @@
             width: 6px;
             text-align: center;
             padding: 8px;
-						text-decoration: none;
+            text-decoration: none;
           }
+
           input {
             border: 1px solid #ddd;
             width: 40px;
@@ -177,7 +265,7 @@
             width: 6px;
             text-align: center;
             padding: 8px;
-						text-decoration: none;
+            text-decoration: none;
           }
         }
 
@@ -199,6 +287,7 @@
       }
     }
   }
+
   .cart-tool {
     overflow: hidden;
     border: 1px solid #ddd;
@@ -249,10 +338,11 @@
           font-size: 16px;
         }
       }
-			
+
 
       .sumbtn {
         float: right;
+
         a {
           display: block;
           position: relative;
@@ -265,10 +355,11 @@
           font-family: "Microsoft YaHei";
           background: #e1251b;
           overflow: hidden;
-					text-decoration: none;
-					&hover {
-						color: white !important;
-					}
+          text-decoration: none;
+
+          &hover {
+            color: white !important;
+          }
         }
       }
     }
