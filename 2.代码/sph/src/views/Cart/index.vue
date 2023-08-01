@@ -239,7 +239,12 @@ export default {
       };
 
 
-      fns[type]&&fns[type]();
+      // fns[type]&&fns[type]();
+
+      // fns[type]?.();
+
+      // a&&a.b&&a.b.c;
+      // a?.b?.c
 
       // 该接口第二个参数,正数代表需要增加多少个,负数代表减少多少个
       this.$API.detail.reqAddCart(good.sourceId,changeNum);
