@@ -11,7 +11,7 @@
         <div class="cart-th6">操作</div>
       </div>
       <div class="cart-body">
-        <ul class="cart-list" v-for="good in cartList" :key="good.id">
+        <ul class="cart-list" v-for="(good,index) in cartList" :key="good.id">
           <li class="cart-list-con1">
             <input :checked="good.isChecked" type="checkbox" name="chk_list" @change="changeCheck(good)">
           </li>
@@ -31,7 +31,7 @@
             <span class="sum">{{ good.skuPrice * good.skuNum }}</span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
+            <a class="sindelet" @click="deleteGood(good,index)">删除</a>
             <br>
           </li>
         </ul>
@@ -44,7 +44,7 @@
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a @click="deleteGoods">删除选中的商品</a>
       </div>
       <div class="money-box">
         <div class="chosed">已选择
@@ -98,6 +98,35 @@ export default {
 
       //2.发送请求告知服务器,本次所有商品的改变状态
       this.$API.cart.reqChangeAllSelected(flag, idList)
+    },
+    deleteGood(good,index){
+      const id = good.sourceId;
+
+      this.cartList.splice(index,1);
+
+      this.$API.cart.reqDeleteGood(id);
+    },
+    deleteGoods(){
+      // 通过reduce方法,来统计当前已选中的商品的id
+      // 由于cartList和产生idList长度不一定一样,所以排除使用map
+      // 由于cartList和产生idList内部存储的数据类型也不一样,所以排除使用filter
+      const idList = this.cartList.reduce((pre,good)=>{
+        if(good.isChecked){
+          // 能进入这里说明当前遍历得到的商品是已选中的,也就是说要删除的
+          pre.push(good.sourceId);
+        }
+        return pre;
+      },[]);
+
+      // 发送请求告知服务器哪些需要删除
+      this.$API.cart.reqDeleteGoods(idList);
+
+      // 通过filter方法,对内存中存储的商品进行过滤,重新赋值给data数据,导致页面重新渲染
+      // 更新出最新结果
+      this.cartList = this.cartList.filter((good)=>{
+        return !good.isChecked
+      });
+      
     }
   },
   computed: {
