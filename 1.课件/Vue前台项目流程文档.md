@@ -4024,7 +4024,7 @@ async handleAddCart(){
 <div class="cart-tool" v-show="cartInfoList.length">
 <div class="empty" v-show="!cartInfoList.length">
   <h2>购物车空空如也</h2>
-  <img src="http://49.232.112.44/img/empty.751bed26.gif" alt="">
+  <img src="http://49.232.112.44/images/empty.gif" alt="">
 </div>
   
 <script>

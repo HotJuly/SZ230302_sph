@@ -21,6 +21,7 @@ const reqDeleteGood = (skuId) =>
 const reqDeleteGoods = (idList) =>
   request.post(`/api/cart/batchDeleteCart`, idList);
 
+
 export default {
   reqCartList,
   reqChangeCheck,

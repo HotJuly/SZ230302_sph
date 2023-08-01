@@ -10,8 +10,8 @@
         <div class="cart-th5">小计（元）</div>
         <div class="cart-th6">操作</div>
       </div>
-      <div class="cart-body">
-        <ul class="cart-list" v-for="(good,index) in cartList" :key="good.id">
+      <div class="cart-body" v-show="cartList.length">
+        <ul class="cart-list" v-for="(good, index) in cartList" :key="good.id">
           <li class="cart-list-con1">
             <input :checked="good.isChecked" type="checkbox" name="chk_list" @change="changeCheck(good)">
           </li>
@@ -23,18 +23,37 @@
             <span class="price">{{ good.skuPrice }}</span>
           </li>
           <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
-            <input autocomplete="off" type="text" :value="good.skuNum" minnum="1" class="itxt">
-            <a href="javascript:void(0)" class="plus">+</a>
+            <a 
+              href="javascript:void(0)" 
+              class="mins"
+              @click="changeSkuNum('sub',good)"
+            >-</a>
+            <input 
+              autocomplete="off" 
+              type="text" 
+              :value="good.skuNum" 
+              minnum="1" 
+              @change="changeSkuNum('input',good,$event)"
+              class="itxt"
+            >
+            <a 
+              href="javascript:void(0)"
+              class="plus"
+              @click="changeSkuNum('add',good)"
+             >+</a>
           </li>
           <li class="cart-list-con6">
             <span class="sum">{{ good.skuPrice * good.skuNum }}</span>
           </li>
           <li class="cart-list-con7">
-            <a class="sindelet" @click="deleteGood(good,index)">删除</a>
+            <a class="sindelet" @click="deleteGood(good, index)">删除</a>
             <br>
           </li>
         </ul>
+      </div>
+      <div class="empty" v-show="!cartList.length">
+        <h2>购物车空空如也</h2>
+        <img src="http://49.232.112.44/images/empty.gif" alt="">
       </div>
     </div>
     <div class="cart-tool">
@@ -48,11 +67,11 @@
       </div>
       <div class="money-box">
         <div class="chosed">已选择
-          <span>0</span>件商品
+          <span>{{total}}</span>件商品
         </div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
-          <i class="summoney">0</i>
+          <i class="summoney">{{totalPrice}}</i>
         </div>
         <div class="sumbtn">
           <a class="sum-btn" href="###" target="_blank">结算</a>
@@ -63,6 +82,7 @@
 </template>
 
 <script>
+import {goodNumReg} from '@/utils/reg';
 export default {
   name: 'ShopCart',
   data() {
@@ -99,34 +119,130 @@ export default {
       //2.发送请求告知服务器,本次所有商品的改变状态
       this.$API.cart.reqChangeAllSelected(flag, idList)
     },
-    deleteGood(good,index){
+    deleteGood(good, index) {
+      if (!window.confirm('你确定要删除吗?')) return;
       const id = good.sourceId;
 
-      this.cartList.splice(index,1);
+      this.cartList.splice(index, 1);
 
       this.$API.cart.reqDeleteGood(id);
     },
-    deleteGoods(){
+    deleteGoods() {
+      if (!window.confirm('你确定要删除选中商品吗?')) return;
       // 通过reduce方法,来统计当前已选中的商品的id
       // 由于cartList和产生idList长度不一定一样,所以排除使用map
       // 由于cartList和产生idList内部存储的数据类型也不一样,所以排除使用filter
-      const idList = this.cartList.reduce((pre,good)=>{
-        if(good.isChecked){
+      const idList = this.cartList.reduce((pre, good) => {
+        if (good.isChecked) {
           // 能进入这里说明当前遍历得到的商品是已选中的,也就是说要删除的
           pre.push(good.sourceId);
         }
         return pre;
-      },[]);
+      }, []);
 
       // 发送请求告知服务器哪些需要删除
       this.$API.cart.reqDeleteGoods(idList);
 
       // 通过filter方法,对内存中存储的商品进行过滤,重新赋值给data数据,导致页面重新渲染
       // 更新出最新结果
-      this.cartList = this.cartList.filter((good)=>{
+      this.cartList = this.cartList.filter((good) => {
         return !good.isChecked
       });
-      
+
+    },
+    // changeSkuNum(type,good,event){
+    //   let changeNum;
+    //   switch(type){
+    //     case 'input':{
+    //       const num = event.target.value * 1;
+
+    //       if(goodNumReg.test(num)){
+    //         changeNum = num - good.skuNum;
+    //         good.skuNum = num;
+    //       }else if(num>200){
+    //         changeNum = 200 - good.skuNum;
+
+    //         // 通过对event.target.value进行赋值,来控制DOM节点的展示效果
+    //         // 强制保证当前页面展示效果与Vue存储的数据达成一致
+    //         good.skuNum = event.target.value =  200;
+    //       }else{
+    //         changeNum = 1 - good.skuNum;
+
+    //         good.skuNum = event.target.value =  1;
+    //       }
+    //       break;
+    //     }
+    //     case 'add':{
+    //       // 能走这里就是数量+1
+
+    //       if(good.skuNum<200){
+    //         good.skuNum+=1;
+    //         changeNum = 1;
+    //       }
+    //       break;
+    //     }
+    //     case 'sub':{
+    //       // 能走这里就是数量-1
+
+    //       if(good.skuNum>1){
+    //         good.skuNum-=1;
+    //         changeNum = -1;
+    //       }
+    //       break;
+    //     }
+    //   }
+
+    //   // 该接口第二个参数,正数代表需要增加多少个,负数代表减少多少个
+    //   this.$API.detail.reqAddCart(good.sourceId,changeNum);
+    // },
+    changeSkuNum(type,good,event){
+      // 策略模式写法
+      // 你出招,我接招
+      // 为每种情况都准备好应对的方法
+      let changeNum;
+
+      const fns = {
+        'input'(){
+          const num = event.target.value * 1;
+
+          if(goodNumReg.test(num)){
+            changeNum = num - good.skuNum;
+            good.skuNum = num;
+          }else if(num>200){
+            changeNum = 200 - good.skuNum;
+
+            // 通过对event.target.value进行赋值,来控制DOM节点的展示效果
+            // 强制保证当前页面展示效果与Vue存储的数据达成一致
+            good.skuNum = event.target.value =  200;
+          }else{
+            changeNum = 1 - good.skuNum;
+
+            good.skuNum = event.target.value =  1;
+          }
+        },
+        'add'(){
+          // 能走这里就是数量+1
+
+          if(good.skuNum<200){
+            good.skuNum+=1;
+            changeNum = 1;
+          }
+        },
+        'sub'(){
+          // 能走这里就是数量-1
+
+          if(good.skuNum>1){
+            good.skuNum-=1;
+            changeNum = -1;
+          }
+        }
+      };
+
+
+      fns[type]&&fns[type]();
+
+      // 该接口第二个参数,正数代表需要增加多少个,负数代表减少多少个
+      this.$API.detail.reqAddCart(good.sourceId,changeNum);
     }
   },
   computed: {
@@ -163,7 +279,7 @@ export default {
         // 如果代码中对当前计算属性进行赋值操作,就会执行set方法
         // const flag = Number(!this.isAllSelected);
 
-        const flag =  Number(newVal);
+        const flag = Number(newVal);
         // 1.用于将购物车中所有的商品改变选中状态,但是只是前端内存中的操作,并没有影响到服务器
         const idList = this.cartList.map((good) => {
           good.isChecked = flag;
@@ -173,6 +289,34 @@ export default {
         //2.发送请求告知服务器,本次所有商品的改变状态
         this.$API.cart.reqChangeAllSelected(flag, idList)
       }
+    },
+    total(){
+      /*
+        需求:累加当前购物车中,所有已选中的商品的数量
+      */
+
+      const num = this.cartList.reduce((pre,good)=>{
+        if(good.isChecked){
+          pre += good.skuNum
+        }
+        return pre;
+      },0);
+
+      return num;
+    },
+    totalPrice(){
+      /*
+        需求:累加当前购物车中,所有已选中的商品的数量*单价
+      */
+
+      const num = this.cartList.reduce((pre,good)=>{
+        if(good.isChecked){
+          pre += (good.skuNum * good.skuPrice)
+        }
+        return pre;
+      },0);
+
+      return num;
     }
   }
 }
