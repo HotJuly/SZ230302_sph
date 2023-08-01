@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn">点击</button>
+    <script>
+        /*
+            函数防抖和节流
+            1.他们是什么?
+                他不是浏览器提供特殊API接口
+                    是我们开发者在书写项目的过程中,研究出来的一种性能优化的写法
+                    他们是一种特殊的代码书写风格
+
+            2.为什么要用他们?
+                使用他们可以提高代码的性能
+
+                没使用函数防抖和节流之前,
+                    用户点击10次按钮,就会触发10次回调函数
+
+                使用函数防抖和节流之后
+                    用户点击10次按钮,只会触发其中的1次回调函数
+
+                特点:他们都可以减少一个函数,在一段时间之内的执行频率
+
+            3.怎么使用他们?
+                参考一下代码
+
+            4.在哪使用过他们?
+                区别:
+                    1.执行的函数不同
+                        如果用户有10次操作,
+                            节流就是第一次触发
+                            防抖就是最后一次触发
+
+                核心区别分析:
+                    1.函数的执行时机不同
+                        节流会立即执行函数
+                        防抖会延迟一段时间执行函数
+
+                    2.数据时效性(数据新不新)
+                        节流每次都会执行第一个函数,所以得到的数据都是旧数据
+                        防抖每次都会执行最后一个函数,所以得到的数据都是新数据
+
+                    在使用方面,需要优先考虑的是数据时效性,再考虑执行速度
+
+                例如:用户点击搜索按钮
+                    由于此处用户会在短时间内连续点击多次搜索按钮,所以我们选择使用节流来减少请求的发送次数
+
+                例如:单词联想功能实现
+                    用于会输入多个文字信息,会连续触发多次搜索框的input时间,然而用户实际上想联想的内容,是最后一次输入的结果
+                        所以选择使用防抖来获取最新数据,并减少请求次数
+        
+        */
+        // function clickHandler(){
+        //     console.log('clickHandler')
+        // }
+        // btn.onclick = clickHandler;
+
+        //-----------------------------------------
+        
+        // function clickHandler(){
+        //     console.log('clickHandler')
+        // }
+
+        // function throttle(callback,time){
+        //     let startTime = 0;
+        //     return function(){
+        //         if(Date.now()-startTime>time){
+        //             callback();
+        //             startTime = Date.now();
+        //         }
+        //     }
+        // }
+
+        // btn.onclick = throttle(clickHandler,2000);
+        
+        //--------------------------------------------
+        function clickHandler(){
+            console.log('clickHandler')
+        }
+
+        function debounce(callback,delay){
+            let timer = null;
+            return function(){
+                if(timer){
+                    clearTimeout(timer);
+                }
+                timer = setTimeout(()=>{
+                    callback();
+                },delay)
+            }
+        }
+
+        btn.onclick = debounce(clickHandler,2000);
+    </script>
+</body>
+</html>

@@ -23,24 +23,10 @@
             <span class="price">{{ good.skuPrice }}</span>
           </li>
           <li class="cart-list-con5">
-            <a 
-              href="javascript:void(0)" 
-              class="mins"
-              @click="changeSkuNum('sub',good)"
-            >-</a>
-            <input 
-              autocomplete="off" 
-              type="text" 
-              :value="good.skuNum" 
-              minnum="1" 
-              @change="changeSkuNum('input',good,$event)"
-              class="itxt"
-            >
-            <a 
-              href="javascript:void(0)"
-              class="plus"
-              @click="changeSkuNum('add',good)"
-             >+</a>
+            <a href="javascript:void(0)" class="mins" @click="changeSkuNum('sub', good)">-</a>
+            <input autocomplete="off" type="text" :value="good.skuNum" minnum="1"
+              @change="changeSkuNum('input', good, $event)" class="itxt">
+            <a href="javascript:void(0)" class="plus" @click="changeSkuNum('add', good)">+</a>
           </li>
           <li class="cart-list-con6">
             <span class="sum">{{ good.skuPrice * good.skuNum }}</span>
@@ -67,11 +53,11 @@
       </div>
       <div class="money-box">
         <div class="chosed">已选择
-          <span>{{total}}</span>件商品
+          <span>{{ total }}</span>件商品
         </div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
-          <i class="summoney">{{totalPrice}}</i>
+          <i class="summoney">{{ totalPrice }}</i>
         </div>
         <div class="sumbtn">
           <a class="sum-btn" href="###" target="_blank">结算</a>
@@ -82,7 +68,7 @@
 </template>
 
 <script>
-import {goodNumReg} from '@/utils/reg';
+import { goodNumReg } from '@/utils/reg';
 export default {
   name: 'ShopCart',
   data() {
@@ -93,6 +79,8 @@ export default {
   async created() {
     const result = await this.$API.cart.reqCartList();
     // console.log(result)
+    // this.cartList = result[0]?result[0].cartInfoList:[];
+    if (!result[0]) return;
     this.cartList = result[0].cartInfoList;
   },
   methods: {
@@ -195,45 +183,53 @@ export default {
     //   // 该接口第二个参数,正数代表需要增加多少个,负数代表减少多少个
     //   this.$API.detail.reqAddCart(good.sourceId,changeNum);
     // },
-    changeSkuNum(type,good,event){
+    changeSkuNum(type, good, event) {
       // 策略模式写法
       // 你出招,我接招
       // 为每种情况都准备好应对的方法
-      let changeNum;
+      // let changeNum=0;
+
+      /*
+        需要对当前的修改数量的回调函数,进行函数防抖升级
+          减少发送请求的次数
+          当发送请求的时候,需要使用最后一次的数字-初始数据
+            注意:其实数字的加减操作不应该防抖,应该正常计算,只有发送请求这个事情需要防抖
+      */
+    // 此处在缓存初始值给后续发送请求的时候计算使用
+    // 此处的flag用于控制什么时候缓存初始值
+    // 在第一次执行该函数的时候会缓存初始值,等到发送请求成功之后,才会再次打开这个入口
+      if (!good.flag) {
+        good.initialNum = good.skuNum;
+      }
 
       const fns = {
-        'input'(){
+        'input'() {
           const num = event.target.value * 1;
 
-          if(goodNumReg.test(num)){
-            changeNum = num - good.skuNum;
+          if (goodNumReg.test(num)) {
             good.skuNum = num;
-          }else if(num>200){
-            changeNum = 200 - good.skuNum;
+          } else if (num > 200) {
 
             // 通过对event.target.value进行赋值,来控制DOM节点的展示效果
             // 强制保证当前页面展示效果与Vue存储的数据达成一致
-            good.skuNum = event.target.value =  200;
-          }else{
-            changeNum = 1 - good.skuNum;
+            good.skuNum = event.target.value = 200;
+          } else {
 
-            good.skuNum = event.target.value =  1;
+            good.skuNum = event.target.value = 1;
           }
         },
-        'add'(){
+        'add'() {
           // 能走这里就是数量+1
 
-          if(good.skuNum<200){
-            good.skuNum+=1;
-            changeNum = 1;
+          if (good.skuNum < 200) {
+            good.skuNum += 1;
           }
         },
-        'sub'(){
+        'sub'() {
           // 能走这里就是数量-1
 
-          if(good.skuNum>1){
-            good.skuNum-=1;
-            changeNum = -1;
+          if (good.skuNum > 1) {
+            good.skuNum -= 1;
           }
         }
       };
@@ -241,13 +237,27 @@ export default {
 
       // fns[type]&&fns[type]();
 
-      // fns[type]?.();
+      fns[type]?.();
+
+      good.flag = true;
 
       // a&&a.b&&a.b.c;
       // a?.b?.c
 
-      // 该接口第二个参数,正数代表需要增加多少个,负数代表减少多少个
-      this.$API.detail.reqAddCart(good.sourceId,changeNum);
+      if (good.timer) {
+        clearTimeout(good.timer);
+      }
+      good.timer = setTimeout(async () => {
+        // 使用最新值-初始值 
+        const changeNum = good.skuNum - good.initialNum;
+
+        if (changeNum) {
+          // 该接口第二个参数,正数代表需要增加多少个,负数代表减少多少个
+          await this.$API.detail.reqAddCart(good.sourceId, changeNum);
+          good.flag = false;
+          good.timer = null;
+        }
+      }, 2000);
     }
   },
   computed: {
@@ -295,31 +305,31 @@ export default {
         this.$API.cart.reqChangeAllSelected(flag, idList)
       }
     },
-    total(){
+    total() {
       /*
         需求:累加当前购物车中,所有已选中的商品的数量
       */
 
-      const num = this.cartList.reduce((pre,good)=>{
-        if(good.isChecked){
+      const num = this.cartList.reduce((pre, good) => {
+        if (good.isChecked) {
           pre += good.skuNum
         }
         return pre;
-      },0);
+      }, 0);
 
       return num;
     },
-    totalPrice(){
+    totalPrice() {
       /*
         需求:累加当前购物车中,所有已选中的商品的数量*单价
       */
 
-      const num = this.cartList.reduce((pre,good)=>{
-        if(good.isChecked){
+      const num = this.cartList.reduce((pre, good) => {
+        if (good.isChecked) {
           pre += (good.skuNum * good.skuPrice)
         }
         return pre;
-      },0);
+      }, 0);
 
       return num;
     }
@@ -541,6 +551,19 @@ export default {
         }
       }
     }
+  }
+}
+
+.empty {
+  padding: 20px;
+  text-align: center;
+
+  h2 {
+    color: gray;
+  }
+
+  img {
+    width: 300px;
   }
 }
 </style>
