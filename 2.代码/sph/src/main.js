@@ -1,23 +1,22 @@
-import Vue from 'vue';
-import App from './App.vue';
+import Vue from "vue";
+import App from "./App.vue";
 // 这是全局引入语法
-import ElementUI from 'element-ui';
+import ElementUI from "element-ui";
 
 // 这是按需引入语法
 // import { Button } from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+import "element-ui/lib/theme-chalk/index.css";
 
-import Header from './components/Header';
-import Footer from './components/Footer';
-import TypeNav from './components/TypeNav';
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import TypeNav from "./components/TypeNav";
 
-import router from '@/router';
-import store from '@/store';
+import router from "@/router";
+import store from "@/store";
 
+import "@/mock";
 
-import '@/mock';
-
-import * as API from '@/api';
+import * as API from "@/api";
 
 // 这种UI库的第一种使用方法,全局引入
 // 也就是说当前UI库中所有的组件都会引入打包
@@ -30,6 +29,7 @@ Vue.use(ElementUI);
 //  也就是说全局引入会增加项目的体积,增加用户的网络请求时间,增加页面白屏时长
 // Vue.component(Button.name, Button);
 
+
 Vue.prototype.$API = API;
 
 Vue.prototype.$bus = new Vue();
@@ -37,13 +37,12 @@ Vue.prototype.$bus = new Vue();
 Vue.config.productionTip = false;
 
 // 引入.vue文件,可以获取到Header组件的配置对象,然后从中获取到他的name属性进行注册
-Vue.component(Header.name,Header);
-Vue.component(Footer.name,Footer);
-Vue.component(TypeNav.name,TypeNav);
+Vue.component(Header.name, Header);
+Vue.component(Footer.name, Footer);
+Vue.component(TypeNav.name, TypeNav);
 
 new Vue({
-    router,
-    store,
-    render:h => h(App)
-})
-.$mount('#app');
+  router,
+  store,
+  render: (h) => h(App),
+}).$mount("#app");
