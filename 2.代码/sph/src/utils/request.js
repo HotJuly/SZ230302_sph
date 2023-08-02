@@ -2,6 +2,7 @@ import axios from "axios";
 import nProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import getTempId from "./getTempId";
+import store from '@/store';
 
 /* 
     此处会创建一个axios的实例对象,方便后续发送请求
@@ -30,6 +31,14 @@ request.interceptors.request.use(
         // 因为uuid是通过当前电脑的mac序列号,以及ip地址等数据,生成的乱码,
         // 所以如果不是同一台电脑,生成的uuid一定不重复
         config.headers.userTempId = getTempId();
+
+        // console.log(store.state.user.token)
+        // 1.通过store对象,获取到请求得到的tokne数据
+        const token = store.state.user.token;
+        if(token){
+          // 如果有token数据,就将token写在请求头中进行发送
+          config.headers.token = token;
+        }
 
         // 注意:一定要写return config;
         return config;

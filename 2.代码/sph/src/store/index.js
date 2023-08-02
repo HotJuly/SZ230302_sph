@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import home from './modules/home';
 import cart from './modules/cart';
+import user from './modules/user';
 
 Vue.use(Vuex);
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     getters:{},
     modules:{
         home,
-        cart
+        cart,
+        user
     }
 })
