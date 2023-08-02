@@ -1,16 +1,17 @@
 <template>
   <h1>
-    Test
+    <el-button type="primary">主要按钮</el-button>
   </h1>
 </template>
 
 <script>
-import axios from 'axios';
+import { Button } from 'element-ui';
 export default {
   name: 'Test',
   async mounted() {
-    const result = await axios.get('http://www.baidu.com/slide');
-    console.log('result',result)
+  },
+  components:{
+    [Button.name]:Button
   }
 }
 </script>

@@ -32,7 +32,11 @@
             <span class="sum">{{ good.skuPrice * good.skuNum }}</span>
           </li>
           <li class="cart-list-con7">
-            <a class="sindelet" @click="deleteGood(good, index)">删除</a>
+            <el-popconfirm @confirm="deleteGood(good, index)" :title="`确定要删除${good.skuName}吗?`">
+              <!-- <el-button slot="reference">删除</el-button> -->
+              <a slot="reference" class="sindelet">删除</a>
+            </el-popconfirm>
+            
             <br>
           </li>
         </ul>
@@ -108,7 +112,6 @@ export default {
       this.$API.cart.reqChangeAllSelected(flag, idList)
     },
     deleteGood(good, index) {
-      if (!window.confirm('你确定要删除吗?')) return;
       const id = good.sourceId;
 
       this.cartList.splice(index, 1);
@@ -195,9 +198,9 @@ export default {
           当发送请求的时候,需要使用最后一次的数字-初始数据
             注意:其实数字的加减操作不应该防抖,应该正常计算,只有发送请求这个事情需要防抖
       */
-    // 此处在缓存初始值给后续发送请求的时候计算使用
-    // 此处的flag用于控制什么时候缓存初始值
-    // 在第一次执行该函数的时候会缓存初始值,等到发送请求成功之后,才会再次打开这个入口
+      // 此处在缓存初始值给后续发送请求的时候计算使用
+      // 此处的flag用于控制什么时候缓存初始值
+      // 在第一次执行该函数的时候会缓存初始值,等到发送请求成功之后,才会再次打开这个入口
       if (!good.flag) {
         good.initialNum = good.skuNum;
       }
