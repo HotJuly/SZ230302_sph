@@ -11,6 +11,7 @@
     "animate.css": "^4.1.1",
     "axios": "^1.4.0",
     "core-js": "^3.8.3",
+    "element-ui": "^2.15.13",
     "nprogress": "^0.2.0",
     "uuid": "^9.0.0",
     "vue": "^2.6.14",
