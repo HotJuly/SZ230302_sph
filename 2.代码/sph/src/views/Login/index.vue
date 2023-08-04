@@ -71,6 +71,8 @@ export default {
 
       // getUserInfo接口->使用token兑换用户的个人信息
       this.$store.dispatch('user/getUserInfo');
+
+      this.$router.replace('/home');
     }
   }
 }

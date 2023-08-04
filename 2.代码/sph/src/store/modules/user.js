@@ -1,5 +1,6 @@
+import {setToken,getToken} from '@/utils/auth';
 const state = {
-    token:"",
+    token:getToken()||"",
     userInfo:{}
 };
 
@@ -25,7 +26,12 @@ const actions = {
         password
       });
 
+
+    //   存入Vuex的目的,是为了这次项目中,每次发送请求都需要使用到token,所以为了速度考虑
       commit('SET_TOKEN',token);
+
+    //   存入localStorage的目的,是为了下次还能使用到这次的token数据
+      setToken(token);
     },
     async getUserInfo({commit}){
         const userInfo = await this._vm.$API.user.reqUserInfo();
