@@ -1,4 +1,4 @@
-import {setToken,getToken} from '@/utils/auth';
+import {setToken,getToken,removeToken} from '@/utils/auth';
 const state = {
     token:getToken()||"",
     userInfo:{}
@@ -10,6 +10,9 @@ const mutations = {
     },
     SET_USER_INFO(state,userInfo){
         state.userInfo = userInfo;
+    },
+    CLEAR_TOKEN(state){
+      state.token = "";
     }
 };
 
@@ -36,6 +39,17 @@ const actions = {
     async getUserInfo({commit}){
         const userInfo = await this._vm.$API.user.reqUserInfo();
         commit('SET_USER_INFO',userInfo);
+    },
+    async logout({commit}){
+
+      // 发送请求的目的,是为了销毁服务器上的token
+      await this._vm.$API.user.reqLogout();
+
+      // 删除localStorage中存储的过期token
+      removeToken();
+
+      // 清空Vuex中存储的过期token
+      commit('CLEAR_TOKEN');
     }
 };
 

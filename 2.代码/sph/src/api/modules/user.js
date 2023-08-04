@@ -9,9 +9,12 @@ const reqLogin = (info) => request.post(`/api/user/passport/login`,info);
 
 const reqUserInfo = () => request.get(`/api/user/passport/auth/getUserInfo`);
 
+const reqLogout = () => request.get(`/api/user/passport/logout`);
+
 export default {
   reqCode,
   reqRegister,
   reqLogin,
-  reqUserInfo
+  reqUserInfo,
+  reqLogout
 };

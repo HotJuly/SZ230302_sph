@@ -178,6 +178,7 @@ export default {
 
 		// this.trademarkList = trademarkList;
 		// this.attrsList = attrsList;
+
 	},
 	watch: {
 		"$route.query": {

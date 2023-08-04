@@ -36,6 +36,7 @@ export default {
     },
     mounted() {
         // console.log(this.$route)
+		// this.$store.dispatch('user/getUserInfo');
     }
 }
 </script>

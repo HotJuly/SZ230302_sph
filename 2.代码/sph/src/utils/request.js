@@ -65,6 +65,9 @@ request.interceptors.response.use(
     if(res.code===200){
         // 默认返回响应体中data属性的数据
         return res.data;
+    }else if(res.code===208){
+      // 能进入这里,说明当前token过期
+      return Promise.reject('token过期');
     }else{
         alert(res.message);
         return Promise.reject(res.message);
