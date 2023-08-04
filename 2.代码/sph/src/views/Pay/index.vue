@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import QRCode from 'qrcode';
 export default {
   name: 'Pay',
   data() {
@@ -63,8 +64,13 @@ export default {
     this.payInfo = result;
   },
   methods: {
-    pay() {
-      const htmlStr = `<img src="/images/dazuo.jpeg" style="width:200px"/>`
+    async pay() {
+      // 给他一个链接,他会还你一个链接
+      // toDataURL方法会返回一个promise对象,其中真正有用的是结果值,所以使用await接收
+      const result = await QRCode.toDataURL(this.payInfo.codeUrl);
+      // console.log(result)
+
+      const htmlStr = `<img src="${result}" style="width:200px"/>`
       // 弹窗的具体配置
       const options = {
         dangerouslyUseHTMLString: true,
