@@ -11,4 +11,5 @@ export { default as test } from './modules/test';
 export { default as cart } from './modules/cart';
 export { default as user } from './modules/user';
 export { default as trade } from './modules/trade';
+export { default as pay } from './modules/pay';
 

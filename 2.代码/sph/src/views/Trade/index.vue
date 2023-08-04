@@ -3,16 +3,14 @@
     <h3 class="title">填写并核对订单信息</h3>
     <div class="content">
       <h5 class="receive">收件人信息</h5>
-      <div 
-      class="address clearFix"
-      v-for="address in addressList"
-      :key="address.id"
-      >
-        <span class="username selected">{{ address.consignee }}</span>
+      <div class="address clearFix" v-for="address in addressList" @click="selectAddress(address)" :key="address.id">
+        <span class="username " :class="{
+          selected: selectedAddress === address
+        }">{{ address.consignee }}</span>
         <p>
           <span class="s1">{{ address.userAddress }}</span>
           <span class="s2">{{ address.phoneNum }}</span>
-          <span class="s3" v-if="address.isDefault==='1'">默认地址</span>
+          <span class="s3" v-if="address.isDefault === '1'">默认地址</span>
         </p>
       </div>
       <div class="line"></div>
@@ -32,17 +30,13 @@
       </div>
       <div class="detail">
         <h5>商品清单</h5>
-        <ul 
-        class="list clearFix"
-        v-for="good in tradeInfo.detailArrayList"
-        :key="good.sourceId"
-        >
+        <ul class="list clearFix" v-for="good in tradeInfo.detailArrayList" :key="good.sourceId">
           <li>
             <img style="width:100px;height:100px" :src="good.imgUrl" alt="">
           </li>
           <li>
             <p>
-            {{ good.skuName }}</p>
+              {{ good.skuName }}</p>
             <h4>7天无理由退货</h4>
           </li>
           <li>
@@ -54,7 +48,7 @@
       </div>
       <div class="bbs">
         <h5>买家留言：</h5>
-        <textarea placeholder="建议留言前先与商家沟通确认" class="remarks-cont"></textarea>
+        <textarea v-model.lazy="orderComment" placeholder="建议留言前先与商家沟通确认" class="remarks-cont"></textarea>
 
       </div>
       <div class="line"></div>
@@ -90,306 +84,367 @@
       </div>
     </div>
     <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay">提交订单</router-link>
+      <a class="subBtn" @click="toPay">提交订单</a>
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'Trade',
-    data(){
-      return{
-        tradeInfo:{},
-        addressList:[]
-      }
-    },
-    async mounted(){
-      /*
-        在公司开发中,除非特殊需求,否则不推荐使用async/await
-        为什么不推荐呢?
-          因为await会拦截后续代码的执行,如果按照下面代码的流程书写
-            就会导致第一个请求没有成功之前,第二个请求发布出去
-              然后浏览器明明提供了多个通道用于发送请求,这么写性能较差
+export default {
+  name: 'Trade',
+  data() {
+    return {
+      tradeInfo: {},
+      addressList: [],
+      selectedAddress: {},
+      orderComment: ""
+    }
+  },
+  async mounted() {
+    /*
+      在公司开发中,除非特殊需求,否则不推荐使用async/await
+      为什么不推荐呢?
+        因为await会拦截后续代码的执行,如果按照下面代码的流程书写
+          就会导致第一个请求没有成功之前,第二个请求发布出去
+            然后浏览器明明提供了多个通道用于发送请求,这么写性能较差
 
-        例如:假设每个请求都是5秒钟成功
-          那么下面写法的请求时长为5+5=10秒
-          如果换成.then写法,那么两个请求可以并发发送,互不影响
-            那么请求时长为5秒
-      */
-      // const result = await this.$API.trade.reqTradeInfo();
-      // // console.log(result)
-      // this.tradeInfo = result;
+      例如:假设每个请求都是5秒钟成功
+        那么下面写法的请求时长为5+5=10秒
+        如果换成.then写法,那么两个请求可以并发发送,互不影响
+          那么请求时长为5秒
+    */
+    // const result = await this.$API.trade.reqTradeInfo();
+    // // console.log(result)
+    // this.tradeInfo = result;
 
-      // const result1 = await this.$API.trade.reqUserAddress();
-      // // console.log(result1)
-      // this.addressList=result1
+    // const result1 = await this.$API.trade.reqUserAddress();
+    // // console.log(result1)
+    // this.addressList=result1
 
-      // 当promise变为成功状态,就会自动执行.then中的第一个回调函数
-      // 在回调函数的形参中,可以获取到promise的结果值
-      this.$API.trade.reqTradeInfo()
-      .then((result)=>{
+    // 当promise变为成功状态,就会自动执行.then中的第一个回调函数
+    // 在回调函数的形参中,可以获取到promise的结果值
+    this.$API.trade.reqTradeInfo()
+      .then((result) => {
         this.tradeInfo = result;
       });
 
-      this.$API.trade.reqUserAddress()
-      .then((result)=>{
+    this.$API.trade.reqUserAddress()
+      .then((result) => {
         this.addressList = result;
-      });
-    }
 
+        this.selectedAddress = result.find((address) => {
+          return address.isDefault === "1"
+        })
+      });
+  },
+  methods: {
+    selectAddress(address) {
+      this.selectedAddress = address;
+    },
+    async toPay() {
+      /*
+        发送请求的流程:
+          1.收集数据
+          2.处理数据格式
+          3.数据校验
+          4.发送请求
+          5.成功做什么
+            失败做什么
+      */
+      // 1.收集数据
+      // 当前一共需要7个参数
+      // 从tradeInfo对象中,获取到当前的订单编号(第1和第7个参数搞定)
+      const { tradeNo, detailArrayList } = this.tradeInfo;
+
+      // 从用户选中的地址对象中,结构出三个参数,分别是收件人姓名,手机号,地址(搞定了3个参数)
+      const { consignee, phoneNum, fullAddress } = this.selectedAddress;
+
+      const paymentWay = "ONLINE";
+
+      const orderComment = this.orderComment;
+
+      //2.处理数据格式
+      const params = {
+        consignee,
+        consigneeTel: phoneNum,
+        deliveryAddress: fullAddress,
+        paymentWay,
+        orderComment,
+        orderDetailList: detailArrayList
+      }
+
+      //4.发送请求
+      const result = await this.$API.trade.reqSubmitOrder(tradeNo,params);
+      // console.log(result);
+
+      this.$router.push(`/pay?orderId=${result}`);
+    }
   }
+
+}
 </script>
 
 <style lang="less" scoped>
-  .trade-container {
-    .title {
-      width: 1200px;
-      margin: 0 auto;
-      font-size: 14px;
-      line-height: 21px;
+.trade-container {
+  .title {
+    width: 1200px;
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 21px;
+  }
+
+  .content {
+    width: 1200px;
+    margin: 10px auto 0;
+    border: 1px solid rgb(221, 221, 221);
+    padding: 25px;
+    box-sizing: border-box;
+
+    .receive,
+    .pay {
+      line-height: 36px;
+      margin: 18px 0;
     }
 
-    .content {
-      width: 1200px;
-      margin: 10px auto 0;
-      border: 1px solid rgb(221, 221, 221);
-      padding: 25px;
-      box-sizing: border-box;
+    .address {
+      padding-left: 20px;
+      margin-bottom: 15px;
 
-      .receive,
-      .pay {
-        line-height: 36px;
-        margin: 18px 0;
+      .username {
+        float: left;
+        width: 100px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        border: 1px solid #ddd;
+        position: relative;
       }
 
-      .address {
-        padding-left: 20px;
-        margin-bottom: 15px;
+      .username::after {
+        content: "";
+        display: none;
+        width: 13px;
+        height: 13px;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        background: url(./images/choosed.png) no-repeat;
+      }
 
-        .username {
+      .username.selected {
+        border-color: #e1251b;
+      }
+
+      .username.selected::after {
+        display: block;
+      }
+
+      p {
+        width: 610px;
+        float: left;
+        line-height: 30px;
+        margin-left: 10px;
+        padding-left: 5px;
+        cursor: pointer;
+
+        .s1 {
           float: left;
-          width: 100px;
+
+        }
+
+        .s2 {
+          float: left;
+          margin: 0 5px;
+        }
+
+        .s3 {
+          float: left;
+          width: 56px;
+          height: 24px;
+          line-height: 24px;
+          margin-left: 10px;
+          background-color: #878787;
+          color: #fff;
+          margin-top: 3px;
+          text-align: center;
+        }
+      }
+
+      p:hover {
+        background-color: #ddd;
+      }
+    }
+
+    .line {
+      height: 1px;
+      background-color: #ddd;
+    }
+
+    .way {
+      width: 1080px;
+      height: 110px;
+      background: #f4f4f4;
+      padding: 15px;
+      margin: 0 auto;
+
+      h5 {
+        line-height: 50px;
+      }
+
+      .info {
+        margin-top: 20px;
+
+        .s1 {
+          float: left;
+          border: 1px solid #ddd;
+          width: 120px;
           height: 30px;
           line-height: 30px;
           text-align: center;
-          border: 1px solid #ddd;
-          position: relative;
-        }
-
-        .username::after {
-          content: "";
-          display: none;
-          width: 13px;
-          height: 13px;
-          position: absolute;
-          right: 0;
-          bottom: 0;
-          background: url(./images/choosed.png) no-repeat;
-        }
-
-        .username.selected {
-          border-color: #e1251b;
-        }
-
-        .username.selected::after {
-          display: block;
+          margin-right: 10px;
         }
 
         p {
-          width: 610px;
-          float: left;
           line-height: 30px;
-          margin-left: 10px;
-          padding-left: 5px;
-          cursor: pointer;
-
-          .s1 {
-            float: left;
-
-          }
-
-          .s2 {
-            float: left;
-            margin: 0 5px;
-          }
-
-          .s3 {
-            float: left;
-            width: 56px;
-            height: 24px;
-            line-height: 24px;
-            margin-left: 10px;
-            background-color: #878787;
-            color: #fff;
-            margin-top: 3px;
-            text-align: center;
-          }
-        }
-
-        p:hover {
-          background-color: #ddd;
-        }
-      }
-
-      .line {
-        height: 1px;
-        background-color: #ddd;
-      }
-
-      .way {
-        width: 1080px;
-        height: 110px;
-        background: #f4f4f4;
-        padding: 15px;
-        margin: 0 auto;
-
-        h5 {
-          line-height: 50px;
-        }
-
-        .info {
-          margin-top: 20px;
-
-          .s1 {
-            float: left;
-            border: 1px solid #ddd;
-            width: 120px;
-            height: 30px;
-            line-height: 30px;
-            text-align: center;
-            margin-right: 10px;
-          }
-
-          p {
-            line-height: 30px;
-          }
-        }
-      }
-
-      .detail {
-        width: 1080px;
-
-        background: #feedef;
-        padding: 15px;
-        margin: 2px auto 0;
-
-        h5 {
-          line-height: 50px;
-        }
-
-        .list {
-          display: flex;
-          justify-content: space-between;
-
-          li {
-            line-height: 30px;
-
-            p {
-
-              margin-bottom: 20px;
-            }
-
-            h4 {
-              color: #c81623;
-              font-weight: 400;
-            }
-
-            h3 {
-
-              color: #e12228;
-            }
-          }
-        }
-      }
-
-      .bbs {
-        margin-bottom: 15px;
-
-        h5 {
-          line-height: 50px;
-        }
-
-        textarea {
-          width: 100%;
-          border-color: #e4e2e2;
-          line-height: 1.8;
-          outline: none;
-          resize: none;
-        }
-      }
-
-      .bill {
-        h5 {
-          line-height: 50px;
-        }
-
-        div {
-          padding-left: 15px;
         }
       }
     }
 
-    .money {
-      width: 1200px;
-      margin: 20px auto;
+    .detail {
+      width: 1080px;
 
-      ul {
-        width: 220px;
-        float: right;
+      background: #feedef;
+      padding: 15px;
+      margin: 2px auto 0;
+
+      h5 {
+        line-height: 50px;
+      }
+
+      .list {
+        display: flex;
+        justify-content: space-between;
 
         li {
           line-height: 30px;
-          display: flex;
-          justify-content: space-between;
 
-          i {
-            color: red;
+          p {
+
+            margin-bottom: 20px;
+          }
+
+          h4 {
+            color: #c81623;
+            font-weight: 400;
+          }
+
+          h3 {
+
+            color: #e12228;
+          }
+
+          &:nth-child(2) {
+            width: 450px;
+          }
+
+          &:nth-child(3) {
+            width: 50px;
+          }
+
+          &:nth-child(4) {
+            width: 15px;
           }
         }
       }
     }
 
-    .trade {
-      box-sizing: border-box;
-      width: 1200px;
-      padding: 10px;
-      margin: 10px auto;
-      text-align: right;
-      background-color: #f4f4f4;
-      border: 1px solid #ddd;
+    .bbs {
+      margin-bottom: 15px;
+
+      h5 {
+        line-height: 50px;
+      }
+
+      textarea {
+        width: 100%;
+        border-color: #e4e2e2;
+        line-height: 1.8;
+        outline: none;
+        resize: none;
+      }
+    }
+
+    .bill {
+      h5 {
+        line-height: 50px;
+      }
 
       div {
-        line-height: 30px;
-      }
-
-      .price span {
-        color: #e12228;
-        font-weight: 700;
-        font-size: 14px;
-      }
-
-      .receiveInfo {
-        color: #999;
+        padding-left: 15px;
       }
     }
-
-    .sub {
-      width: 1200px;
-      margin: 0 auto 10px;
-
-      .subBtn {
-        float: right;
-        width: 164px;
-        height: 56px;
-        font: 700 18px "微软雅黑";
-        line-height: 56px;
-        text-align: center;
-        color: #fff;
-        background-color: #e1251b;
-
-      }
-    }
-
   }
+
+  .money {
+    width: 1200px;
+    margin: 20px auto;
+
+    ul {
+      width: 220px;
+      float: right;
+
+      li {
+        line-height: 30px;
+        display: flex;
+        justify-content: space-between;
+
+        i {
+          color: red;
+        }
+      }
+    }
+  }
+
+  .trade {
+    box-sizing: border-box;
+    width: 1200px;
+    padding: 10px;
+    margin: 10px auto;
+    text-align: right;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+
+    div {
+      line-height: 30px;
+    }
+
+    .price span {
+      color: #e12228;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .receiveInfo {
+      color: #999;
+    }
+  }
+
+  .sub {
+    width: 1200px;
+    margin: 0 auto 10px;
+
+    .subBtn {
+      float: right;
+      width: 164px;
+      height: 56px;
+      font: 700 18px "微软雅黑";
+      line-height: 56px;
+      text-align: center;
+      color: #fff;
+      background-color: #e1251b;
+
+    }
+  }
+
+}
 </style>
