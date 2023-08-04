@@ -11,6 +11,9 @@ import Search from "@/views/Search";
 import Register from "@/views/Register";
 import Detail from "@/views/Detail";
 import AddCartSuccess from "@/views/AddCartSuccess";
+import Pay from "@/views/Pay";
+import Trade from "@/views/Trade";
+import PaySuccess from "@/views/PaySuccess";
 import Test from "@/views/Test";
 
 Vue.use(VueRouter);
@@ -36,6 +39,27 @@ const router = new VueRouter({
     {
       path: "/addsuccess",
       component: AddCartSuccess,
+      meta: {
+        isShowFooter: true,
+      },
+    },
+    {
+      path: "/pay",
+      component: Pay,
+      meta: {
+        isShowFooter: true,
+      },
+    },
+    {
+      path: "/trade",
+      component: Trade,
+      meta: {
+        isShowFooter: true,
+      },
+    },
+    {
+      path: "/paysuccess",
+      component: PaySuccess,
       meta: {
         isShowFooter: true,
       },
@@ -120,7 +144,23 @@ const router = new VueRouter({
               
 
       2.如果当前没有token
+        有部分页面需要用户登录之后才能进入,有部分页面不需要登录就可以进入
 */
+
+// 不需要登录即可进入的路由地址
+const whiteList = [
+  "/home",
+  "/search",
+  "/detail",
+  "/addsuccess",
+  "/cart",
+  "/login",
+  "/register",
+];
+
+// 需要登录才能进入的路由地址
+const authList = ["/pay", "/paysuccess", "/trade"];
+
 router.beforeEach(async (to, from, next) => {
   // 获取store中的token数据
   const token = store.state.user.token;
@@ -144,14 +184,41 @@ router.beforeEach(async (to, from, next) => {
         // 能进入这里,说明白请求个人信息失败了,因为token过期了
         // console.log("token过期了");
 
-        store.dispatch('user/logout');
-        next('/login');
+        store.dispatch("user/logout");
+        next("/login");
       }
     }
   } else {
     // 能进入这里,说明当前没有token
-    // 此处暂时都放行,但是后面肯定要做路由跳转的权限控制
-    next();
+    /* 
+      路由鉴权功能
+      如果用户想要进入的是需要登录的页面,而用户没有登录
+        直接让用户跳转到登录界面
+
+      如果用户想要进入的是不需要登录的页面
+        那就让他想去哪就去哪
+
+      思路:通过to.path可以知道用户想要去哪里
+    */
+
+    if(authList.includes(to.path)){
+      // 能进入这里面,说明当前用户想要进去的页面需要登录,但是用户没有登录
+      next('/login')
+    }else{
+      // 能进入这里,说明用户想进入的是不需要登录的页面,那就任他去
+      next();
+    }
+
+    // console.log(to.path);
+    // const result = whiteList.some((whitePath) => {
+    //     // "/detail/2".startsWith("/detail")
+    //   return to.path.startsWith(whitePath);
+    // });
+    // if (result) {
+    //   next();
+    // } else {
+    //   next("/login");
+    // }
   }
 });
 
