@@ -124,7 +124,10 @@ export default {
           this.$msgbox.close();
           this.$message.success('支付成功');
 
+          // 支付成功之后,自动关闭当前ws通道,降低前后端压力
           this.ws.close();
+
+          // 支付成功之后,自动关闭心跳请求
           clearInterval(this.timer);
           return;
         }
