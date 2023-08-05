@@ -13,6 +13,7 @@ const mutations = {
     },
     CLEAR_TOKEN(state){
       state.token = "";
+      state.userInfo = {};
     }
 };
 

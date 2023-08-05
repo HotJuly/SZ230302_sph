@@ -69,7 +69,7 @@ request.interceptors.response.use(
       // 能进入这里,说明当前token过期
       return Promise.reject('token过期');
     }else{
-        alert(res.message);
+        // alert(res.message);
         return Promise.reject(res.message);
     }
 
@@ -77,6 +77,9 @@ request.interceptors.response.use(
   },
   () => {
     nProgress.done();
+
+    // 公司中,如果token过期,会直接把响应码改为401,不返回任何数据
+    // 那么当前请求就会被自动视为失败,然后进入失败的响应拦截器中
 
     return Promise.reject('网络请求失败,请检查网络配置!!');
   }

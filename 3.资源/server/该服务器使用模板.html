@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="btn">点我请求</button>
+    <button id="btn2">断开连接</button>
+    <script>
+      const ws = new WebSocket(
+        "ws://localhost:3000/api/payment/weixin/queryPayStatus?orderId=2321&token=eb63d8edb3164ae4919a1ef991fd4318"
+      );
+
+      ws.addEventListener("message", function (event) {
+        const {type,data} = JSON.parse(event.data);
+
+        if(type===1||type===3){
+            alert(data);
+            return;
+        }
+        if(type===2){
+            alert(data);
+            ws.close();
+            return;
+        }
+      });
+
+      ws.addEventListener("close", function (event) {
+        console.log("Message closed");
+      });
+
+      let index = 0;
+
+      btn.onclick = function () {
+        ws.send("reqPayStatus")
+      };
+
+      btn2.onclick = function () {
+        ws.close()
+      };
+    </script>
+  </body>
+</html>

@@ -64,6 +64,36 @@ export default {
     this.payInfo = result;
   },
   methods: {
+    // async pay() {
+    //   // 给他一个链接,他会还你一个链接
+    //   // toDataURL方法会返回一个promise对象,其中真正有用的是结果值,所以使用await接收
+    //   const result = await QRCode.toDataURL(this.payInfo.codeUrl);
+    //   // console.log(result)
+
+    //   const htmlStr = `<img src="${result}" style="width:200px"/>`
+    //   // 弹窗的具体配置
+    //   const options = {
+    //     dangerouslyUseHTMLString: true,
+    //     center: true,
+    //     showClose: false,
+    //     showCancelButton: true,
+    //     cancelButtonText: '支付遇到问题',
+    //     confirmButtonText: '已完成支付',
+    //   }
+    //   // 弹起来！
+    //   this.$alert(htmlStr, '微信扫码支付', {
+    //     ...options,
+    //     callback: (type) => {
+    //       if (type === 'confirm') {
+    //         console.log('您点了确定按钮')
+    //       } else {
+    //         console.log('您点了取消按钮')
+    //       }
+    //     }
+    //   });
+
+    //   // 此时用户就能看到二维码,那么就可以开始发送请求,请求当前的支付状态
+    // },
     async pay() {
       // 给他一个链接,他会还你一个链接
       // toDataURL方法会返回一个promise对象,其中真正有用的是结果值,所以使用await接收
@@ -90,7 +120,20 @@ export default {
             console.log('您点了取消按钮')
           }
         }
-      })
+      });
+
+      // 此时用户就能看到二维码,那么就可以开始发送请求,请求当前的支付状态
+      this.timer = setInterval(async () => {
+        try {
+          const payStatus = await this.$API.pay.reqPayStatus(this.orderId);
+          console.log('payStatus', payStatus);
+          clearInterval(this.timer);
+          this.$msgbox.close();
+          this.$message.success('支付成功!!!')
+        } catch (e) {
+          console.log('还没支付');
+        }
+      },10000)
     }
   }
 }

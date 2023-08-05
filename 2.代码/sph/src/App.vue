@@ -50,3 +50,9 @@ export default {
     --animate-duration: 0.4s;
 }
 </style>
+
+<style>
+a{
+    cursor: pointer;
+}
+</style>

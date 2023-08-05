@@ -8,7 +8,7 @@
           <p>尚品汇欢迎您！</p>
           <p v-if="userInfo.nickName">
             <span>您好,{{userInfo.nickName}}</span>
-            <a  class="register">退出登录</a>
+            <a  class="register" @click="logout">退出登录</a>
             <a  class="register">个人中心</a>
           </p>
           <p v-else>
@@ -153,6 +153,9 @@ export default {
       // );
 
       // console.log(this.$router)
+    },
+    logout(){
+      this.$store.dispatch('user/logout');
     }
   },
   computed:{
