@@ -149,6 +149,15 @@ const router = new VueRouter({
       meta: {
         isShowFooter: true,
       },
+      beforeEnter(to,from,next){
+        const fromPath = from.path;
+        const result = fromPath.startsWith('/detail');
+        if(result){
+          next()
+        }else{
+          next('/cart')
+        }
+      }
     },
     {
       path: "/pay",
@@ -163,6 +172,13 @@ const router = new VueRouter({
       meta: {
         isShowFooter: true,
       },
+      beforeEnter(to,from,next){
+        if(from.path==='/cart'){
+          next()
+        }else{
+          next('/')
+        }
+      }
     },
     {
       path: "/paysuccess",

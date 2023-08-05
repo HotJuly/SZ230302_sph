@@ -68,7 +68,7 @@
 									<div class="p-img">
 										<a @click="toDetail(good)">
 											<!-- <img :src="good.defaultImg" /> -->
-											<img v-lazy="good.defaultImg" />
+											<img v-lazy="good.defaultImg" data-src="" />
 										</a>
 									</div>
 									<div class="price">
