@@ -49,6 +49,13 @@ Vue.component(Header.name, Header);
 Vue.component(Footer.name, Footer);
 Vue.component(TypeNav.name, TypeNav);
 
+// 全局混合可以给每个组件都添加上一些相同的操作
+// Vue.mixin({
+//   mounted(){
+//    console.log(this.$options.name)
+//   }
+// })
+
 new Vue({
   router,
   store,
