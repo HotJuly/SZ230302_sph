@@ -14,6 +14,10 @@ import TypeNav from "./components/TypeNav";
 import router from "@/router";
 import store from "@/store";
 
+import VueLazyload from 'vue-lazyload'
+import picture from '@/assets/images/dazuo.jpeg'
+
+
 import "@/mock";
 
 import * as API from "@/api";
@@ -21,6 +25,10 @@ import * as API from "@/api";
 // 这种UI库的第一种使用方法,全局引入
 // 也就是说当前UI库中所有的组件都会引入打包
 Vue.use(ElementUI);
+
+Vue.use(VueLazyload,{
+	loading:picture
+})
 
 // 这是UI库的第二种使用方法,按需引入
 // 问题:全局引入那么方便,为什么还要推出按需引入?

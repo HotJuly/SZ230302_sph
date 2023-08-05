@@ -121,6 +121,7 @@ export default {
         if(type===2){
           console.log(data)
 
+          // 关闭弹窗,并提示用户支付成功
           this.$msgbox.close();
           this.$message.success('支付成功');
 
@@ -129,6 +130,8 @@ export default {
 
           // 支付成功之后,自动关闭心跳请求
           clearInterval(this.timer);
+
+          this.$router.replace('/paysuccess');
           return;
         }
 
